@@ -1,4 +1,10 @@
-# Assignment Template
+# Assigned task: Domestic Repairs
+
+Name: **Deyan Bozhilov**
+Username: **bozhilo2**
+E-mail: **bozhilo2@uni.coventry.ac.uk**
+
+## Assignment Template
 
 This repository contains the base files for the assignment. You will need to create a _private duplicate_ in your module organisation. Carry out the following steps, taken from the [GitHub documentation](https://help.github.com/en/enterprise/2.16/user/articles/duplicating-a-repository):
 
