@@ -1,8 +1,8 @@
 # Assigned task: Domestic Repairs
 
-Name: **Deyan Bozhilov**
-Username: **bozhilo2**
-E-mail: **bozhilo2@uni.coventry.ac.uk**
+Name: **Deyan Bozhilov** <br />
+Username: **bozhilo2** <br />
+E-mail: **bozhilo2@uni.coventry.ac.uk** <br />
 
 ## Assignment Template
 
