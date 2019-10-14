@@ -1,10 +1,15 @@
-# Assigned task: Domestic Repairs
+## If `npm install` doesn't work and gives an error when setting up the template, here is one possible fix:
 
-Name: **Deyan Bozhilov** <br />
-Username: **bozhilo2** <br />
-E-mail: **bozhilo2@uni.coventry.ac.uk** <br />
+>Delete `node_modules` folder and `package-lock.json` <br/>
+>Add `package-lock.json` as an exception in `.gitignore` <br/>
+>Run `npm i` again
 
-## Assignment Template
+If it still doesn't work and it gives an error with Python and/or Microsoft Visual version, try installing `Microsoft Visual C++ 2017 Redistributable` 
+
+Any other bugs or problems please report to your tutor
+
+# Assignment Template
+>>>>>>> upstream/master
 
 This repository contains the base files for the assignment. You will need to create a _private duplicate_ in your module organisation. Carry out the following steps, taken from the [GitHub documentation](https://help.github.com/en/enterprise/2.16/user/articles/duplicating-a-repository):
 
