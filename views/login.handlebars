@@ -1,24 +1,39 @@
-
 <!doctype html>
-
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Log In</title>
-		<meta name="description" content="form to add new books">
-		<meta name="author" content="Mark Tyers">
-		<link href="style.css" type="text/css" rel="stylesheet" />
-	</head>
-	<body>
-		<h1>Log In</h1>
-		{{#if msg}}
- 			<p class="msg">{{msg}}</p>
-		{{/if}}
-		<form action="/login" method="post">
-			<p>Username:<br /><input type="text" name="user" placeholder="your username" value="{{user}}" autofocus></p>
-			<p>Password:<br /><input type="password" name="pass" placeholder="your password" value=""></p>
-			<p><input type="submit" value="Log in"></p>
-		</form>
-		<p><a href="/register">register</a></p>
-	</body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+    <meta name="description" content="form to add new books">
+    <meta name="author" content="Mark Tyers">
+    <link href="style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <form action="/login" method="post" class="user-form">
+        <p class="form-title">Login</p>
+        {{#if error}}
+            <p class="error">{{error}}</p>
+        {{/if}}
+        {{log  error}}
+        {{#if success}}
+            <p class="success">{{success}}</p>
+        {{/if}}
+        <div class="form-group">
+            <label for="user">Username</label>
+            <input type="text" name="user" value="{{user}}"/>
+        </div>
+        <div class="form-group">
+            <label for="pass">Password</label>
+            <input type="password" name="pass"/>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Login">
+        </div>
+        <p class="form-redirector">Don't have an account? <a href="/register">Register</a></p>
+    </form>
+</div>
+</body>
 </html>

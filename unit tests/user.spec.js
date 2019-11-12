@@ -1,7 +1,7 @@
 
 'use strict'
 
-const Accounts = require('../modules/user.js')
+const Accounts = require('../models/user.js')
 
 describe('register()', () => {
 
@@ -43,6 +43,7 @@ describe('register()', () => {
 describe('uploadPicture()', () => {
 	// this would have to be done by mocking the file system
 	// perhaps using mock-fs?
+
 })
 
 describe('login()', () => {

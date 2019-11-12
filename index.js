@@ -19,7 +19,7 @@ const mime = require('mime-types')
 //const jimp = require('jimp')
 
 /* IMPORT CUSTOM MODULES */
-const User = require('./modules/user')
+const User = require('./models/user')
 
 const app = new Koa()
 const router = new Router()
@@ -31,7 +31,7 @@ app.use(bodyParser())
 app.use(session(app))
 app.use(views(`${__dirname}/views`, { extension: 'handlebars' }, {map: { handlebars: 'handlebars' }}))
 
-const defaultPort = 8080
+const defaultPort = 5000
 const port = process.env.PORT || defaultPort
 const dbName = 'website.db'
 const saltRounds = 10
@@ -45,10 +45,10 @@ const saltRounds = 10
  */
 router.get('/', async ctx => {
 	try {
-		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
+		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=unauthorized')
 		const data = {}
-		if(ctx.query.msg) data.msg = ctx.query.msg
-		await ctx.render('index')
+		if(ctx.query.msg) data.success = ctx.query.msg
+		await ctx.render('index',data)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
@@ -72,14 +72,14 @@ router.post('/register', koaBody, async ctx => {
 	try {
 		// extract the data from the request
 		const body = ctx.request.body
-		console.log(body)
 		const {path, type} = ctx.request.files.avatar
 		// call the functions in the module
 		const user = await new User(dbName)
 		await user.register(body.user, body.pass)
 		// await user.uploadPicture(path, type)
 		// redirect to the home page
-		ctx.redirect(`/?msg=new user "${body.name}" added`)
+		ctx.session.authorised = true
+		ctx.redirect(`/?msg=user added`)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
@@ -87,7 +87,7 @@ router.post('/register', koaBody, async ctx => {
 
 router.get('/login', async ctx => {
 	const data = {}
-	if(ctx.query.msg) data.msg = ctx.query.msg
+	if(ctx.query.msg) data.error = ctx.query.msg
 	if(ctx.query.user) data.user = ctx.query.user
 	await ctx.render('login', data)
 })
@@ -98,7 +98,7 @@ router.post('/login', async ctx => {
 		const user = await new User(dbName)
 		await user.login(body.user, body.pass)
 		ctx.session.authorised = true
-		return ctx.redirect('/?msg=you are now logged in...')
+		return ctx.redirect('/?msg=welcome back')
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
@@ -106,7 +106,7 @@ router.post('/login', async ctx => {
 
 router.get('/logout', async ctx => {
 	ctx.session.authorised = null
-	ctx.redirect('/?msg=you are now logged out')
+	ctx.redirect('/?msg=goodbye')
 })
 
 app.use(router.routes())
