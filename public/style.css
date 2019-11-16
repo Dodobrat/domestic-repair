@@ -12,6 +12,14 @@ body {
     margin: 0;
 }
 
+.badge{
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+    margin: 0 1rem;
+    background: rgba(0,0,0,0.2);
+    border-radius: 0.5rem;
+}
+
 .error {
     padding: 1rem;
     background: rgba(255, 0, 0, 0.1);

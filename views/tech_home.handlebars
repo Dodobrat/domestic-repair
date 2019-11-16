@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Something went wrong">
+    <meta name="author" content="Deyan Bozhilov">
+    <title>Dashboard</title>
+    <link href="../style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<nav class="navbar">
+    <div class="container nav-container">
+        <a class="nav-title" href="/">Domestic Repair</a>
+        <ul>
+            <li>
+                {{#if tech.user}}
+                    <span class="badge">Technician</span>
+                    Hi, {{tech.user}}
+                {{/if}}
+            </li>
+            <a href="/tech/logout">
+                <li>
+                    Logout
+                </li>
+            </a>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    {{#if success}}
+        <p class="success">{{success}}</p>
+    {{/if}}
+    {{#if error}}
+        <p class="error">{{error}}</p>
+    {{/if}}
+    <h1>Home</h1>
+    <p>This is a secure page. Users need to have a valid account and be logged in to see it.</p>
+</div>
+</body>
+</html>

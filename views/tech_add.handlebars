@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Register</title>
+    <meta name="description" content="Register Technician">
+    <meta name="author" content="Deyan Bozhilov">
+    <link href="../style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <form action="/tech/register" enctype="multipart/form-data" method="post" class="user-form">
+        <p class="form-title">Register Technician</p>
+        <div class="form-group">
+            <label for="user">Username</label>
+            <input type="text" name="user"/>
+        </div>
+        <div class="form-group">
+            <label for="pass">Password</label>
+            <input type="password" name="pass"/>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Register">
+        </div>
+        <p class="form-redirector">Already have an account? <a href="/tech/login">Login</a></p>
+    </form>
+</div>
+</body>
+</html>
