@@ -45,9 +45,10 @@ const saltRounds = 10
  */
 router.get('/', async ctx => {
 	try {
-		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=unauthorized')
 		const data = {}
+		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=unauthorized')
 		if(ctx.query.msg) data.success = ctx.query.msg
+		data.user = ctx.session.user
 		await ctx.render('index',data)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
@@ -75,10 +76,9 @@ router.post('/register', koaBody, async ctx => {
 		const {path, type} = ctx.request.files.avatar
 		// call the functions in the module
 		const user = await new User(dbName)
-		await user.register(body.user, body.pass)
 		// await user.uploadPicture(path, type)
 		// redirect to the home page
-		ctx.session.authorised = true
+		ctx.session = await user.register(body.user, body.pass)
 		ctx.redirect(`/?msg=user added`)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
@@ -96,8 +96,7 @@ router.post('/login', async ctx => {
 	try {
 		const body = ctx.request.body
 		const user = await new User(dbName)
-		await user.login(body.user, body.pass)
-		ctx.session.authorised = true
+		ctx.session = await user.login(body.user, body.pass)
 		return ctx.redirect('/?msg=welcome back')
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
@@ -106,6 +105,7 @@ router.post('/login', async ctx => {
 
 router.get('/logout', async ctx => {
 	ctx.session.authorised = null
+	ctx.session.user = null
 	ctx.redirect('/?msg=goodbye')
 })
 

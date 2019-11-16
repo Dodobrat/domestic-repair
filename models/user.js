@@ -29,7 +29,12 @@ module.exports = class User {
 			pass = await bcrypt.hash(pass, saltRounds)
 			sql = `INSERT INTO users(user, pass) VALUES("${user}", "${pass}")`
 			await this.db.run(sql)
-			return true
+			sql = `SELECT * FROM users WHERE user="${user}" AND pass="${pass}";`
+			const loggedUser = await this.db.get(sql)
+			return {
+				authorised: true,
+				user: loggedUser
+			}
 		} catch(err) {
 			throw err
 		}
@@ -42,19 +47,23 @@ module.exports = class User {
 		//await fs.copy(path, `public/avatars/${username}.${fileExtension}`)
 	}
 
-	async login(username, password) {
+	async login(user, pass) {
 		try {
-			let sql = `SELECT count(id) AS count FROM users WHERE user="${username}";`
+			let sql = `SELECT count(id) AS count FROM users WHERE user="${user}";`
 			const records = await this.db.get(sql)
-			if(!records.count) throw new Error(`username "${username}" not found`)
-			sql = `SELECT pass FROM users WHERE user = "${username}";`
+			if(!records.count) throw new Error(`username "${user}" not found`)
+			sql = `SELECT pass FROM users WHERE user = "${user}";`
 			const record = await this.db.get(sql)
-			const valid = await bcrypt.compare(password, record.pass)
-			if(valid === false) throw new Error(`invalid password for account "${username}"`)
-			return true
+			const valid = await bcrypt.compare(pass, record.pass)
+			if(valid === false) throw new Error(`invalid password for account "${user}"`)
+			sql = `SELECT * FROM users WHERE user="${user}" AND pass="${record.pass}";`
+			const loggedUser = await this.db.get(sql)
+			return {
+				authorised: true,
+				user: loggedUser
+			}
 		} catch(err) {
 			throw err
 		}
 	}
-
 }
