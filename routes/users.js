@@ -10,6 +10,7 @@ const koaBody = require('koa-body')({multipart: true, uploadDir: '.'})
 
 /* IMPORT CUSTOM MODULES */
 const User = require('../models/user')
+const Job = require('../models/job')
 
 const router = new Router
 
@@ -28,6 +29,9 @@ router.get('/', async ctx => {
 		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=unauthorized')
 		if(ctx.query.msg) data.success = ctx.query.msg
 		data.user = ctx.session.user
+		const job = await new Job(dbName)
+		data.userJobs = await job.getByUser(data.user.id)
+		// console.log(data.userJobs)
 		await ctx.render('index',data)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
@@ -86,6 +90,34 @@ router.get('/logout', async ctx => {
 	ctx.session.authorised = null
 	ctx.session.user = null
 	ctx.redirect('/login')
+})
+
+router.post('/report', async ctx => {
+	try{
+		const {type, age, manufacturer, desc, user} = ctx.request.body
+		const newJob = {
+			desc: desc,
+			type: type,
+			age: age,
+			manufacturer: manufacturer,
+			user: user,
+			createdAt: Date.now()
+		}
+		const job = await new Job(dbName)
+		await job.add(newJob)
+		ctx.redirect('/?msg=job added')
+	} catch (err) {
+		throw err
+	}
+})
+
+router.get('/report/:id', async ctx => {
+	const job = await new Job(dbName)
+	const data = {
+		user: ctx.session.user,
+		job: await job.getById(ctx.params.id)
+	}
+	await ctx.render('report', data)
 })
 
 module.exports = router

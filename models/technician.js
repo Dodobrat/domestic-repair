@@ -26,7 +26,7 @@ module.exports = class Technician {
 			pass = await bcrypt.hash(pass, saltRounds)
 			sql = `INSERT INTO technicians(user, pass) VALUES("${user}", "${pass}")`
 			await this.db.run(sql)
-			sql = `SELECT * FROM technicians WHERE user="${user}" AND pass="${pass}";`
+			sql = `SELECT * FROM technicians WHERE user="${user}";`
 			const loggedTech = await this.db.get(sql)
 			return {
 				authorised: true,
@@ -46,7 +46,7 @@ module.exports = class Technician {
 			const record = await this.db.get(sql)
 			const valid = await bcrypt.compare(pass, record.pass)
 			if (valid === false) throw new Error(`invalid password for account "${user}"`)
-			sql = `SELECT * FROM technicians WHERE user="${user}" AND pass="${record.pass}";`
+			sql = `SELECT * FROM technicians WHERE user="${user}";`
 			const loggedTech = await this.db.get(sql)
 			return {
 				authorised: true,

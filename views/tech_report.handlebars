@@ -7,19 +7,22 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="Something went wrong">
     <meta name="author" content="Deyan Bozhilov">
-    <title>Report from {{user.user}}</title>
+    <title>Report</title>
     <script src="https://kit.fontawesome.com/0782d985f5.js" crossorigin="anonymous"></script>
-    <link href="../style.css" type="text/css" rel="stylesheet"/>
+    <link href="../../style.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
 <nav class="navbar">
     <div class="container nav-container">
-        <a class="nav-title" href="/">Domestic Repair</a>
+        <a class="nav-title" href="/tech/dashboard">Domestic Repair</a>
         <ul>
             <li>
-                Hi, {{user.user}}
+                {{#if tech.user}}
+                    <span class="badge">Technician</span>
+                    Hi, {{tech.user}}
+                {{/if}}
             </li>
-            <a href="/logout">
+            <a href="/tech/logout">
                 <li>
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </li>
@@ -28,15 +31,19 @@
     </div>
 </nav>
 <div class="container">
-    <a href="/" class="go-back">
+    <a href="/tech/dashboard" class="go-back">
         <button><i class="fas fa-arrow-left"></i> Go Back</button>
     </a>
-    Status:
-    {{#if job.completed}}
-        <i class="fas fa-check text-green"></i>
-    {{else}}
-        <i class="fas fa-times text-red"></i>
-    {{/if}}
+    <a href="/tech/check/{{job.id}}" class="mark-completed">
+        <button>
+            Completed:
+            {{#if job.completed}}
+                <i class="fas fa-thumbs-up text-green"></i>
+            {{else}}
+                <i class="far fa-thumbs-up text-red"></i>
+            {{/if}}
+        </button>
+    </a>
     <div class="job-details">
         <div class="keywords">
             <span> Appliance: <span class="tag">{{job.appType}}</span></span>

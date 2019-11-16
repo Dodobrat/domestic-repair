@@ -13,7 +13,7 @@
 <body>
 <div class="container">
     <form action="/tech/login" method="post" class="user-form">
-        <p class="form-title">Login</p>
+        <p class="form-title">Technician Login</p>
         {{#if error}}
             <p class="error">{{error}}</p>
         {{/if}}
@@ -23,11 +23,11 @@
         {{/if}}
         <div class="form-group">
             <label for="user">Username</label>
-            <input type="text" name="user" value="{{user}}"/>
+            <input id="user" type="text" name="user" value="{{user}}"/>
         </div>
         <div class="form-group">
             <label for="pass">Password</label>
-            <input type="password" name="pass"/>
+            <input id="pass" type="password" name="pass"/>
         </div>
         <div class="form-group">
             <input type="submit" value="Login">

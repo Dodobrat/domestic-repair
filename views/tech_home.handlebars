@@ -8,12 +8,13 @@
     <meta name="description" content="Something went wrong">
     <meta name="author" content="Deyan Bozhilov">
     <title>Dashboard</title>
+    <script src="https://kit.fontawesome.com/0782d985f5.js" crossorigin="anonymous"></script>
     <link href="../style.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
 <nav class="navbar">
     <div class="container nav-container">
-        <a class="nav-title" href="/">Domestic Repair</a>
+        <a class="nav-title" href="/tech/dashboard">Domestic Repair</a>
         <ul>
             <li>
                 {{#if tech.user}}
@@ -23,7 +24,7 @@
             </li>
             <a href="/tech/logout">
                 <li>
-                    Logout
+                    <i class="fas fa-sign-out-alt"></i> Logout
                 </li>
             </a>
         </ul>
@@ -36,8 +37,34 @@
     {{#if error}}
         <p class="error">{{error}}</p>
     {{/if}}
-    <h1>Home</h1>
-    <p>This is a secure page. Users need to have a valid account and be logged in to see it.</p>
+    <div class="hero-section">
+        <h2 class="title">Dashboard</h2>
+    </div>
+    <div class="job-list">
+        <p class="job-list-title"><i class="fas fa-clipboard-list"></i> all jobs</p>
+        {{#each jobs}}
+            <div class="job-item">
+                <a href="/tech/report/{{id}}">
+                    <span>{{desc}}</span>
+                    <small>
+                        <span class="secondary">{{appType}}</span> |
+                        <span class="secondary">{{appAge}} years</span> |
+                        <span class="secondary">{{appMan}}</span>
+                    </small>
+                </a>
+            <button class="completed">
+                Completed:
+                {{#if completed}}
+                    <i class="fas fa-thumbs-up"></i>
+                {{else}}
+                    <a href="/tech/check/{{id}}">
+                        <i class="far fa-thumbs-up"></i>
+                    </a>
+                {{/if}}
+                </button>
+            </div>
+        {{/each}}
+    </div>
 </div>
 </body>
 </html>
