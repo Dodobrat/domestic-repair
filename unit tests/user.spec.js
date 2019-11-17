@@ -8,17 +8,23 @@ describe('register()', () => {
 	test('register a valid account', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		const register = await account.register('doej', 'password')
-		expect(register).toBe(true)
+		const register = await account.register('deyan', 'password')
+		expect(register).toEqual({
+			authorised: true,
+			user: {
+				id: 1,
+				user: 'deyan'
+			}
+		})
 		done()
 	})
 
 	test('register a duplicate username', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		await account.register('doej', 'password')
-		await expect( account.register('doej', 'password') )
-			.rejects.toEqual( Error('username "doej" already in use') )
+		await account.register('deyan', 'password')
+		await expect( account.register('deyan', 'password') )
+			.rejects.toEqual( Error('username "deyan" already in use') )
 		done()
 	})
 
@@ -33,7 +39,7 @@ describe('register()', () => {
 	test('error if blank password', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		await expect( account.register('doej', '') )
+		await expect( account.register('deyan', '') )
 			.rejects.toEqual( Error('missing password') )
 		done()
 	})
@@ -50,9 +56,15 @@ describe('login()', () => {
 	test('log in with valid credentials', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		await account.register('doej', 'password')
-		const valid = await account.login('doej', 'password')
-		expect(valid).toBe(true)
+		await account.register('deyan', 'password')
+		const valid = await account.login('deyan', 'password')
+		expect(valid).toEqual({
+			authorised: true,
+			user: {
+				id: 1,
+				user: 'deyan'
+			}
+		})
 		done()
 	})
 
@@ -74,4 +86,27 @@ describe('login()', () => {
 		done()
 	})
 
+})
+
+describe('getById()', () => {
+	test('get user with valid id', async done => {
+		expect.anything()
+		const account = await new Accounts()
+		await account.register('deyan', 'password')
+		const valid = await account.getById(1)
+		expect(valid).toEqual({
+			id: 1,
+			user: 'deyan'
+		})
+		done()
+	})
+
+	test('get user with invalid id', async done => {
+		expect.anything()
+		const account = await new Accounts()
+		await account.register('deyan', 'password')
+		await expect( account.getById(10) )
+			.rejects.toEqual( Error('user not found') )
+		done()
+	})
 })

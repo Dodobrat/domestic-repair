@@ -19,20 +19,18 @@ module.exports = class Appliance {
 
 	async add(type) {
 		try {
+			if (type.length === 0) throw new Error('missing type')
 			const sql = `INSERT INTO appliances (type) 
             VALUES ("${type}");`
 			await this.db.run(sql)
+			return true
 		} catch (err) {
 			throw err
 		}
 	}
 
 	async getAll() {
-		try {
-			const sql = 'SELECT * FROM appliances'
-			return await this.db.all(sql)
-		} catch (err) {
-			throw err
-		}
+		const sql = 'SELECT * FROM appliances'
+		return await this.db.all(sql)
 	}
 }

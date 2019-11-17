@@ -19,20 +19,18 @@ module.exports = class Manufacturer {
 
 	async add(name) {
 		try {
+			if (name.length === 0) throw new Error('missing name')
 			const sql = `INSERT INTO manufacturers (name) 
             VALUES ("${name}");`
 			await this.db.run(sql)
+			return true
 		} catch (err) {
 			throw err
 		}
 	}
 
 	async getAll() {
-		try {
-			const sql = 'SELECT * FROM manufacturers'
-			return await this.db.all(sql)
-		} catch (err) {
-			throw err
-		}
+		const sql = 'SELECT * FROM manufacturers'
+		return await this.db.all(sql)
 	}
 }

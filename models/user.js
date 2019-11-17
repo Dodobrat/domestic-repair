@@ -68,7 +68,10 @@ module.exports = class User {
 
 	async getById(id) {
 		try {
-			const sql = `SELECT id,user FROM users WHERE id="${id}";`
+			let sql = `SELECT count(id) AS count FROM users WHERE id="${id}";`
+			const exists = await this.db.get(sql)
+			if (!exists.count) throw new Error(`user not found`)
+			sql = `SELECT id,user FROM users WHERE id="${id}";`
 			return await this.db.get(sql)
 		} catch (err) {
 			throw err
