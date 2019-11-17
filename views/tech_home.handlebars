@@ -37,8 +37,10 @@
     {{#if error}}
         <p class="error">{{error}}</p>
     {{/if}}
-    <div class="hero-section">
+    <div class="hero-section tech-hero">
         <h2 class="title">Dashboard</h2>
+        <button id="add-appliance"><i class="fas fa-blender-phone"></i> Add Supported Appliance</button>
+        <button id="add-manufacturer"><i class="far fa-copyright"></i> Add Supported Manufacturer</button>
     </div>
     <div class="job-list">
         <p class="job-list-title"><i class="fas fa-clipboard-list"></i> all jobs</p>
@@ -65,6 +67,70 @@
             </div>
         {{/each}}
     </div>
+    <br>
+    <div class="row-wrap">
+        <div class="wrap-list">
+            <p class="wrap-list-title">Supported Appliances</p>
+            {{#each appliances}}
+                <div class="wrap-item">
+                    <p>{{type}}</p>
+                </div>
+            {{/each}}
+        </div>
+        <br>
+        <div class="wrap-list">
+            <p class="wrap-list-title">Supported Manufacturers</p>
+            {{#each manufacturers}}
+                <div class="wrap-item">
+                    <p>{{name}}</p>
+                </div>
+            {{/each}}
+        </div>
+    </div>
 </div>
+
+
+<div class="modal-overlay" id="manufacturer-modal">
+    <div class="modal-window">
+        <div class="modal-header">
+            <p class="modal-header-title">Add supported Manufacturer</p>
+            <button class="close man"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <form action="/tech/manufacturer" method="post" class="modal-form">
+                <div class="modal-form-group">
+                    <label for="name">Manufacturer Name</label>
+                    <input name="name" id="name" required>
+                </div>
+                <div class="modal-form-group">
+                    <input type="submit" value="Submit">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal-overlay" id="appliance-modal">
+    <div class="modal-window">
+        <div class="modal-header">
+            <p class="modal-header-title">Add supported Appliance</p>
+            <button class="close app"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <form action="/tech/appliance" method="post" class="modal-form">
+                <div class="modal-form-group">
+                    <label for="type">Appliance Type</label>
+                    <input name="type" id="type" required>
+                </div>
+                <div class="modal-form-group">
+                    <input type="submit" value="Submit">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="../app.js"></script>
 </body>
 </html>

@@ -75,8 +75,9 @@
                     <label for="type">Appliance type</label>
                     <select name="type" id="type" required>
                         <option value="" selected>-- Choose --</option>
-                        <option value="oven">Oven</option>
-                        <option value="fridge">Fridge</option>
+                        {{#each appliances}}
+                            <option value="{{type}}">{{type}}</option>
+                        {{/each}}
                     </select>
                 </div>
                 <div class="modal-form-group">
@@ -85,14 +86,23 @@
                         <option value="" selected>-- Choose --</option>
                         <option value="1">1 year</option>
                         <option value="2">2 years</option>
+                        <option value="3">3 year</option>
+                        <option value="4">4 years</option>
+                        <option value="5">5 year</option>
+                        <option value="6">6 years</option>
+                        <option value="7">7 year</option>
+                        <option value="8">8 years</option>
+                        <option value="9">9 years</option>
+                        <option value="10">10 years</option>
                     </select>
                 </div>
                 <div class="modal-form-group">
                     <label for="manufacturer">Appliance Manufacturer</label>
                     <select name="manufacturer" id="manufacturer" required>
                         <option value="" selected>-- Choose --</option>
-                        <option value="bosch">Bosch</option>
-                        <option value="miele">Miele</option>
+                        {{#each manufacturers}}
+                            <option value="{{name}}">{{name}}</option>
+                        {{/each}}
                     </select>
                 </div>
                 <div class="modal-form-group">

@@ -11,6 +11,8 @@ const koaBody = require('koa-body')({multipart: true, uploadDir: '.'})
 /* IMPORT CUSTOM MODULES */
 const User = require('../models/user')
 const Job = require('../models/job')
+const Appliance = require('../models/appliance')
+const Manufacturer = require('../models/manufacturer')
 
 const router = new Router
 
@@ -31,7 +33,12 @@ router.get('/', async ctx => {
 		data.user = ctx.session.user
 		const job = await new Job(dbName)
 		data.userJobs = await job.getByUser(data.user.id)
-		// console.log(data.userJobs)
+		const appliance = await new Appliance(dbName)
+		const appliances = await appliance.getAll()
+		const manufacturer = await new Manufacturer(dbName)
+		const manufacturers = await manufacturer.getAll()
+		if(appliances.length !== 0) data.appliances = appliances
+		if(manufacturers.length !== 0) data.manufacturers = manufacturers
 		await ctx.render('index',data)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
@@ -93,6 +100,7 @@ router.get('/logout', async ctx => {
 })
 
 router.post('/report', async ctx => {
+	const date = new Date()
 	try{
 		const {type, age, manufacturer, desc, user} = ctx.request.body
 		const newJob = {
@@ -101,7 +109,7 @@ router.post('/report', async ctx => {
 			age: age,
 			manufacturer: manufacturer,
 			user: user,
-			createdAt: Date.now()
+			createdAt: `${date.getDate()}.${date.getMonth()}.${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
 		}
 		const job = await new Job(dbName)
 		await job.add(newJob)

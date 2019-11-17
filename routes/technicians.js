@@ -12,6 +12,8 @@ const koaBody = require('koa-body')({multipart: true, uploadDir: '.'})
 const Technician = require('../models/technician')
 const User = require('../models/user')
 const Job = require('../models/job')
+const Appliance = require('../models/appliance')
+const Manufacturer = require('../models/manufacturer')
 
 const router = Router({
 	prefix: '/tech'
@@ -32,9 +34,16 @@ router.get('/dashboard', async ctx => {
 		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=unauthorized')
 		if(ctx.query.msg) data.success = ctx.query.msg
 		data.tech = ctx.session.tech
+		console.log(data);
 		const job = await new Job(dbName)
 		const jobs = await job.getAll()
+		const appliance = await new Appliance(dbName)
+		const appliances = await appliance.getAll()
+		const manufacturer = await new Manufacturer(dbName)
+		const manufacturers = await manufacturer.getAll()
 		if(jobs.length !== 0) data.jobs = jobs
+		if(appliances.length !== 0) data.appliances = appliances
+		if(manufacturers.length !== 0) data.manufacturers = manufacturers
 		await ctx.render('tech_home',data)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
@@ -93,9 +102,12 @@ router.get('/logout', async ctx => {
 router.get('/report/:id', async ctx => {
 	const job = await new Job(dbName)
 	const jobResult = await job.getById(ctx.params.id)
+	const user = await new User(dbName)
+	const users = await user.getById(jobResult.userId)
 	const data = {
 		tech: ctx.session.tech,
-		job: jobResult
+		job: jobResult,
+		jobUser: users
 	}
 	await ctx.render('tech_report', data)
 })
@@ -103,6 +115,18 @@ router.get('/report/:id', async ctx => {
 router.get('/check/:id', async ctx => {
 	const job = await new Job(dbName)
 	await job.markCompleted(ctx.params.id)
+	await ctx.redirect('back')
+})
+
+router.post('/appliance', async ctx => {
+	const appliance = await new Appliance(dbName)
+	await appliance.add(ctx.request.body.type)
+	await ctx.redirect('back')
+})
+
+router.post('/manufacturer', async ctx => {
+	const manufacturer = await new Manufacturer(dbName)
+	await manufacturer.add(ctx.request.body.name)
 	await ctx.redirect('back')
 })
 

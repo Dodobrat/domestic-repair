@@ -14,7 +14,7 @@ module.exports = class Job {
             appAge INTEGER, 
             appMan VARCHAR(32), 
             desc VARCHAR(300), 
-            createdAt DATETIME,
+            createdAt TEXT,
             completed INTEGER,
             userId INTEGER,
              FOREIGN KEY(userId) REFERENCES users(id)
