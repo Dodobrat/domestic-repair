@@ -13,7 +13,6 @@ const User = require('../models/user')
 const Job = require('../models/job')
 const Appliance = require('../models/appliance')
 const Manufacturer = require('../models/manufacturer')
-const fs = require('fs-extra')
 
 const router = new Router
 

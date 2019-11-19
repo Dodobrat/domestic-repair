@@ -3,6 +3,7 @@
 
 const Accounts = require('../models/user.js')
 
+
 describe('register()', () => {
 
 	test('register a valid account', async done => {
@@ -65,10 +66,9 @@ describe('regCheck()', () => {
 	})
 })
 
-describe('uploadPicture()', () => {
-	// this would have to be done by mocking the file system
-	// perhaps using mock-fs?
-})
+// describe('uploadPicture()', () => {
+//
+// })
 
 describe('login()', () => {
 	test('log in with valid credentials', async done => {

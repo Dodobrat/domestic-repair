@@ -222,11 +222,11 @@ describe('getById()', () => {
 		const valid = await job.getById(1)
 		expect(valid).toEqual({
 			appAge: 3,
-			appMan: "Bosch",
-			appType: "Washer",
+			appMan: 'Bosch',
+			appType: 'Washer',
 			completed: 0,
-			createdAt: "31.12.2019 23:59:59",
-			desc: "test",
+			createdAt: '31.12.2019 23:59:59',
+			desc: 'test',
 			id: 1,
 			userId: 1
 		})
