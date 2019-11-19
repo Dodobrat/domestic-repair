@@ -72,6 +72,8 @@ body {
     margin: 0 0 0 auto;
     padding: 0;
     list-style-type: none;
+    display: flex;
+    align-items: center;
 }
 
 .navbar .nav-container ul a {
@@ -82,12 +84,24 @@ body {
 
 .navbar .nav-container ul a li {
     pointer-events: auto;
+    padding: 1.25rem;
 }
 
 .navbar .nav-container ul li {
-    display: inline-block;
-    padding: 1.25rem 1rem;
     pointer-events: none;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+}
+
+.navbar .nav-container ul li img{
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    margin: 0 1rem 0 0;
+    pointer-events: none;
+    border: 2px solid white
 }
 
 .navbar .nav-container ul li:hover {

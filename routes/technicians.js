@@ -28,22 +28,27 @@ const dbName = 'website.db'
  * @route {GET} /
  * @authentication This route requires cookie-based authentication.
  */
+const dataPass = async() => {
+	const dataObj = {}
+	const appliance = await new Appliance(dbName)
+	const appliances = await appliance.getAll()
+	const manufacturer = await new Manufacturer(dbName)
+	const manufacturers = await manufacturer.getAll()
+	if(appliances.length !== 0) dataObj.appliances = appliances
+	if(manufacturers.length !== 0) dataObj.manufacturers = manufacturers
+	return dataObj
+}
+
 router.get('/dashboard', async ctx => {
 	try {
 		const data = {}
 		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=unauthorized')
 		if(ctx.query.msg) data.success = ctx.query.msg
 		data.tech = ctx.session.tech
-		console.log(data);
 		const job = await new Job(dbName)
 		const jobs = await job.getAll()
-		const appliance = await new Appliance(dbName)
-		const appliances = await appliance.getAll()
-		const manufacturer = await new Manufacturer(dbName)
-		const manufacturers = await manufacturer.getAll()
 		if(jobs.length !== 0) data.jobs = jobs
-		if(appliances.length !== 0) data.appliances = appliances
-		if(manufacturers.length !== 0) data.manufacturers = manufacturers
+		data.extra = await dataPass()
 		await ctx.render('tech_home',data)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})

@@ -24,15 +24,25 @@ module.exports = class Job {
 		})()
 	}
 
+	async validateDetails(formData) {
+		const {type, age, manufacturer, desc} = formData
+		if(type.length === 0) throw new Error('missing type')
+		if(age.length === 0) throw new Error('missing age')
+		if(manufacturer.length === 0) throw new Error('missing manufacturer')
+		if(desc.length === 0) throw new Error('missing desc')
+	}
+
+	async validateUserDetails(formData) {
+		const {user, createdAt} = formData
+		if(user.length === 0) throw new Error('missing user')
+		if(createdAt.length === 0) throw new Error('missing timestamp')
+	}
+
 	async add(formData) {
 		try {
+			await this.validateDetails(formData)
+			await this.validateUserDetails(formData)
 			const {type, age, manufacturer, desc, user, createdAt} = formData
-			if(type.length === 0) throw new Error('missing type')
-			if(age.length === 0) throw new Error('missing age')
-			if(manufacturer.length === 0) throw new Error('missing manufacturer')
-			if(desc.length === 0) throw new Error('missing desc')
-			if(user.length === 0) throw new Error('missing user')
-			if(createdAt.length === 0) throw new Error('missing timestamp')
 			const sql = `INSERT INTO jobs (appType, appAge, appMan, desc, createdAt, completed, userId) 
             VALUES ("${type}","${age}","${manufacturer}","${desc}","${createdAt}", 0, "${user}");`
 			await this.db.run(sql)
@@ -80,7 +90,7 @@ module.exports = class Job {
 			let sql = `SELECT COUNT(id) as jobs FROM jobs WHERE id='${id}';`
 			const data = await this.db.get(sql)
 			if (data.jobs === 0) {
-				throw new Error(`no such job found`)
+				throw new Error('no such job found')
 			}else{
 				sql = `UPDATE jobs SET completed = 1 WHERE id='${id}';`
 				await this.db.run(sql)

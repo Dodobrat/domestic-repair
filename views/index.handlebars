@@ -17,6 +17,7 @@
         <a class="nav-title" href="/">Domestic Repair</a>
         <ul>
             <li>
+                <img src="{{user.avatar}}" alt="">
                 Hi, {{user.user}}
             </li>
             <a href="/logout">
@@ -75,7 +76,7 @@
                     <label for="type">Appliance type</label>
                     <select name="type" id="type" required>
                         <option value="" selected>-- Choose --</option>
-                        {{#each appliances}}
+                        {{#each extra.appliances}}
                             <option value="{{type}}">{{type}}</option>
                         {{/each}}
                     </select>
@@ -100,7 +101,7 @@
                     <label for="manufacturer">Appliance Manufacturer</label>
                     <select name="manufacturer" id="manufacturer" required>
                         <option value="" selected>-- Choose --</option>
-                        {{#each manufacturers}}
+                        {{#each extra.manufacturers}}
                             <option value="{{name}}">{{name}}</option>
                         {{/each}}
                     </select>
