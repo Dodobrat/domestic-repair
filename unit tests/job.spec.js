@@ -109,7 +109,7 @@ describe('add()', () => {
 	})
 })
 
-describe('getAll()', () => {
+describe('getAllUnassigned()', () => {
 	test('get all jobs', async done => {
 		expect.anything()
 		const job = await new Jobs()
@@ -121,16 +121,20 @@ describe('getAll()', () => {
 			user: 1,
 			createdAt: '31.12.2019 23:59:59'
 		})
-		const valid = await job.getAll()
+		const valid = await job.getAllUnassigned()
 		expect(valid).toEqual([
 			{
 				appAge: 3,
 				appMan: 'Bosch',
 				appType: 'Washer',
+				assignedTo: null,
 				completed: 0,
 				createdAt: '31.12.2019 23:59:59',
 				desc: 'test',
+				executionDate: null,
+				executionTime: null,
 				id: 1,
+				price: null,
 				userId: 1
 			}
 		])
@@ -140,7 +144,7 @@ describe('getAll()', () => {
 	test('get if no jobs', async done => {
 		expect.anything()
 		const job = await new Jobs()
-		const valid = await job.getAll()
+		const valid = await job.getAllUnassigned()
 		expect(valid).toEqual([])
 		done()
 	})
@@ -164,10 +168,14 @@ describe('getByUser()', () => {
 				appAge: 3,
 				appMan: 'Bosch',
 				appType: 'Washer',
+				assignedTo: null,
 				completed: 0,
 				createdAt: '31.12.2019 23:59:59',
 				desc: 'test',
+				executionDate: null,
+				executionTime: null,
 				id: 1,
+				price: null,
 				userId: 1
 			}
 		])
@@ -207,6 +215,69 @@ describe('getByUser()', () => {
 	})
 })
 
+describe('getTechAssigned()', () => {
+	test('get technician assigned to job by id', async done => {
+		expect.anything()
+		const job = await new Jobs()
+		await job.add({
+			desc: 'test',
+			type: 'Washer',
+			age: 3,
+			manufacturer: 'Bosch',
+			user: 1,
+			createdAt: '31.12.2019 23:59:59'
+		})
+		const valid = await job.getTechAssigned(1)
+		expect(valid).toEqual({
+			appAge: 3,
+			appMan: 'Bosch',
+			appType: 'Washer',
+			assignedTo: null,
+			completed: 0,
+			createdAt: '31.12.2019 23:59:59',
+			desc: 'test',
+			executionDate: null,
+			executionTime: null,
+			id: 1,
+			price: null,
+			userId: 1
+		})
+		done()
+	})
+
+	test('get technician assigned to job with invalid id', async done => {
+		expect.anything()
+		const job = await new Jobs()
+		await job.add({
+			desc: 'test',
+			type: 'Washer',
+			age: 3,
+			manufacturer: 'Bosch',
+			user: 1,
+			createdAt: '31.12.2019 23:59:59'
+		})
+		const valid = await job.getTechAssigned(10)
+		expect(valid).toBe(null)
+		done()
+	})
+
+	test('get technician assigned to job with no id', async done => {
+		expect.anything()
+		const job = await new Jobs()
+		await job.add({
+			desc: 'test',
+			type: 'Washer',
+			age: 3,
+			manufacturer: 'Bosch',
+			user: 1,
+			createdAt: '31.12.2019 23:59:59'
+		})
+		await expect( job.getTechAssigned('') )
+			.rejects.toEqual( Error('no argument passed') )
+		done()
+	})
+})
+
 describe('getById()', () => {
 	test('get job by id', async done => {
 		expect.anything()
@@ -224,10 +295,14 @@ describe('getById()', () => {
 			appAge: 3,
 			appMan: 'Bosch',
 			appType: 'Washer',
+			assignedTo: null,
 			completed: 0,
 			createdAt: '31.12.2019 23:59:59',
 			desc: 'test',
+			executionDate: null,
+			executionTime: null,
 			id: 1,
+			price: null,
 			userId: 1
 		})
 		done()

@@ -67,11 +67,11 @@ router.get('/register', async ctx => await ctx.render('register'))
  */
 router.post('/register', koaBody, async ctx => {
 	try {
-		const body = ctx.request.body
+		const {user, email, pass} = ctx.request.body
 		const {path, type} = ctx.request.files.avatar
-		const user = await new User(dbName)
-		const avatar = await user.uploadPicture(path, type)
-		ctx.session = await user.register(body.user, body.pass, avatar)
+		const userModel = await new User(dbName)
+		const avatar = await userModel.uploadPicture(path, type)
+		ctx.session = await userModel.register(user, email, pass, avatar)
 		ctx.redirect('/?msg=user added')
 	} catch(err) {
 		await ctx.render('error', {message: err.message})

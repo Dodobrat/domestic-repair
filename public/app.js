@@ -4,13 +4,24 @@
 const modal = document.getElementById('report-modal')
 const modalTrigger = document.getElementById('add-report')
 const modalDestroyer = document.querySelector('.close')
+const quoteModal = document.getElementById('quote-modal')
+const quoteModalTrigger = document.getElementById('quote')
+const quoteModalDestroyer = document.querySelector('.close.quote')
 
 const openModal = () => {
 	modal.classList.add('show')
 }
 
+const quoteOpenModal = () => {
+	quoteModal.classList.add('show')
+}
+
 const closeModal = () => {
 	modal.classList.remove('show')
+}
+
+const quoteCloseModal = () => {
+	quoteModal.classList.remove('show')
 }
 
 const outsideClick = (e) => {
@@ -18,12 +29,22 @@ const outsideClick = (e) => {
 		closeModal()
 	}
 }
+const quoteOutsideClick = (e) => {
+	if (e.target === quoteModal) {
+		quoteCloseModal()
+	}
+}
 
 if(document.body.contains(modalTrigger)) {
 	modalTrigger.addEventListener('click', openModal)
 	modalDestroyer.addEventListener('click', closeModal)
 }
+if(document.body.contains(quoteModalTrigger)) {
+	quoteModalTrigger.addEventListener('click', quoteOpenModal)
+	quoteModalDestroyer.addEventListener('click', quoteCloseModal)
+}
 window.addEventListener('click', outsideClick)
+window.addEventListener('click', quoteOutsideClick)
 
 const manModal = document.getElementById('manufacturer-modal')
 const manModalTrigger = document.getElementById('add-manufacturer')

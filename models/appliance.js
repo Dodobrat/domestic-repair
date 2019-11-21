@@ -7,7 +7,6 @@ module.exports = class Appliance {
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
-			// we need this table to store the user accounts
 			const sql = `CREATE TABLE IF NOT EXISTS appliances (
 			id INTEGER PRIMARY KEY AUTOINCREMENT, 
             type TEXT

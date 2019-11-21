@@ -12,34 +12,31 @@ module.exports = class User {
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
-			// we need this table to store the user accounts
 			const sql = `CREATE TABLE IF NOT EXISTS users (
-				id INTEGER PRIMARY KEY AUTOINCREMENT,
-			 	user TEXT,
-			  	pass TEXT,
-			   	avatar VARCHAR(255));`
+			id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, email TEXT UNIQUE, pass TEXT, avatar VARCHAR(255));`
 			await this.db.run(sql)
 			return this
 		})()
 	}
 
-	async regCheck(user, pass, avatar) {
+	async regCheck(user, email, pass, avatar) {
 		if (user.length === 0) throw new Error('missing username')
+		if (email.length === 0) throw new Error('missing email')
 		if (pass.length === 0) throw new Error('missing password')
 		if (avatar.length === 0) throw new Error('missing avatar')
 		return true
 	}
 
-	async register(user, pass, avatar) {
+	async register(user, email, pass, avatar) {
 		try {
-			await this.regCheck(user, pass, avatar)
+			await this.regCheck(user, email, pass, avatar)
 			let sql = `SELECT COUNT(id) as records FROM users WHERE user="${user}";`
 			const data = await this.db.get(sql)
 			if (data.records !== 0) throw new Error(`username "${user}" already in use`)
 			pass = await bcrypt.hash(pass, saltRounds)
-			sql = `INSERT INTO users(user, pass, avatar) VALUES("${user}", "${pass}", "${avatar}")`
+			sql = `INSERT INTO users(user, email, pass, avatar) VALUES("${user}", "${email}", "${pass}", "${avatar}")`
 			await this.db.run(sql)
-			sql = `SELECT id,user,avatar FROM users WHERE user="${user}";`
+			sql = `SELECT id,user,avatar,email FROM users WHERE user="${user}";`
 			const loggedUser = await this.db.get(sql)
 			return {
 				authorised: true,
@@ -68,7 +65,7 @@ module.exports = class User {
 			const record = await this.db.get(sql)
 			const valid = await bcrypt.compare(pass, record.pass)
 			if (valid === false) throw new Error(`invalid password for account "${user}"`)
-			sql = `SELECT id,user,avatar FROM users WHERE user="${user}";`
+			sql = `SELECT id,user,avatar,email FROM users WHERE user="${user}";`
 			const loggedUser = await this.db.get(sql)
 			return {
 				authorised: true,
@@ -84,7 +81,7 @@ module.exports = class User {
 			let sql = `SELECT count(id) AS count FROM users WHERE id="${id}";`
 			const exists = await this.db.get(sql)
 			if (!exists.count) throw new Error('user not found')
-			sql = `SELECT id,user,avatar FROM users WHERE id="${id}";`
+			sql = `SELECT id,user,avatar,email FROM users WHERE id="${id}";`
 			return await this.db.get(sql)
 		} catch (err) {
 			throw err
