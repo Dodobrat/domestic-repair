@@ -62,4 +62,17 @@ module.exports = class Technician {
 			throw err
 		}
 	}
+
+
+	async getById(id) {
+		try {
+			let sql = `SELECT count(id) AS count FROM technicians WHERE id="${id}";`
+			const exists = await this.db.get(sql)
+			if (!exists.count) return null
+			sql = `SELECT id,user,email FROM technicians WHERE id="${id}";`
+			return await this.db.get(sql)
+		} catch (err) {
+			throw err
+		}
+	}
 }

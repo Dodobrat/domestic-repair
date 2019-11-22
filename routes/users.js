@@ -10,6 +10,7 @@ const koaBody = require('koa-body')({multipart: true, uploadDir: '.'})
 
 /* IMPORT CUSTOM MODULES */
 const User = require('../models/user')
+const Technician = require('../models/technician')
 const Job = require('../models/job')
 const Appliance = require('../models/appliance')
 const Manufacturer = require('../models/manufacturer')
@@ -129,11 +130,14 @@ router.post('/report', async ctx => {
 })
 
 router.get('/report/:id', async ctx => {
+	const data = {}
+	if(ctx.session.authorised === true) data.user = ctx.session.user
 	const job = await new Job(dbName)
-	const data = {
-		user: ctx.session.user,
-		job: await job.getById(ctx.params.id)
-	}
+	const tech = await new Technician(dbName)
+	const jobRes = await job.getById(ctx.params.id)
+	const techRes = await tech.getById(jobRes.assignedTo)
+	if(techRes !== null) data.tech = techRes
+	if(jobRes.length !== 0) data.job = jobRes
 	await ctx.render('report', data)
 })
 

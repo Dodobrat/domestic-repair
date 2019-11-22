@@ -49,6 +49,23 @@
             <p>{{job.desc}}</p>
         </div>
     </div>
+    <br>
+    {{#if job.assignedTo}}
+        <div class="job-details">
+            <h3 class="text-center">Quote</h3>
+            <div class="keywords">
+                <span> Price: <span class="tag">£ {{job.price}}</span></span>
+                <span> Booked Date: <span class="tag">{{job.executionDate}}</span></span>
+                <span> Booked Time-Slot: <span class="tag">{{job.executionTime}}</span></span>
+            </div>
+            <p class="created">
+                A technician will come to the premises to execute the repair. His name is <span class="secondary">{{tech.user}}</span>.
+                <br>
+                Please do not let them in before they have identified themselves. <br>
+                <strong>We do not take responsibility if you get killed by someone other than our employee</strong>
+            </p>
+        </div>
+    {{/if}}
 </div>
 </body>
 </html>
