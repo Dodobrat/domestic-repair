@@ -48,11 +48,30 @@
             <div class="job-item">
                  <span class="job-status">
                     Status:
-                     {{#if completed}}
+                     {{#if status}}
                          <i class="fas fa-check text-green"></i>
                      {{else}}
                          <i class="fas fa-times text-red"></i>
                      {{/if}}
+                </span>
+                <a href="/tech/report/{{id}}">
+                    <span>{{desc}}</span>
+                    <small>
+                        <span class="secondary">{{appType}}</span> |
+                        <span class="secondary">{{appAge}} years</span> |
+                        <span class="secondary">{{appMan}}</span>
+                    </small>
+                </a>
+            </div>
+        {{/each}}
+    </div>
+    <br>
+    <div class="job-list">
+        <p class="job-list-title"><i class="fas fa-clipboard-list"></i> pending jobs</p>
+        {{#each techPendingJobs}}
+            <div class="job-item">
+                 <span class="job-status">
+                    Status: <i class="fas fa-spinner"></i>
                 </span>
                 <a href="/tech/report/{{id}}">
                     <span>{{desc}}</span>
@@ -72,7 +91,7 @@
             <div class="job-item">
                 <span class="job-status">
                     Status:
-                    {{#if completed}}
+                    {{#if status}}
                         <i class="fas fa-check text-green"></i>
                     {{else}}
                         <i class="fas fa-times text-red"></i>
@@ -96,6 +115,7 @@
             {{#each extra.appliances}}
                 <div class="wrap-item">
                     <p>{{type}}</p>
+                    <a href="/tech/remove-app/{{id}}">Remove</a>
                 </div>
             {{/each}}
         </div>
@@ -105,6 +125,7 @@
             {{#each extra.manufacturers}}
                 <div class="wrap-item">
                     <p>{{name}}</p>
+                    <a href="/tech/remove-man/{{id}}">Remove</a>
                 </div>
             {{/each}}
         </div>

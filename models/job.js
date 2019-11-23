@@ -8,36 +8,44 @@ module.exports = class Job {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			const sql = `CREATE TABLE IF NOT EXISTS jobs (
-			id INTEGER PRIMARY KEY AUTOINCREMENT, appType VARCHAR(32), appAge INTEGER, appMan VARCHAR(32), 
-			desc VARCHAR(300), executionDate VARCHAR(32) NULL, executionTime VARCHAR(32) NULL, price INTEGER NULL, 
-			createdAt TEXT, completed INTEGER,assignedTo INTEGER NULL, userId INTEGER, 
-			 FOREIGN KEY(userId) REFERENCES users(id), FOREIGN KEY(assignedTo) REFERENCES technicians(id));`
+			id INTEGER PRIMARY KEY AUTOINCREMENT, 
+			appType TEXT, appAge INTEGER, appMan TEXT, desc TEXT, 
+			lat TEXT NULL, lng TEXT NULL, 
+			createdAt TEXT, 
+			status INTEGER DEFAULT 0 NOT NULL,
+			assigned INTEGER DEFAULT NULL,
+			userId INTEGER NOT NULL,
+			quoteId INTEGER NULL,
+			FOREIGN KEY(userId) REFERENCES users(id)
+			FOREIGN KEY(quoteId) REFERENCES quotes(id));`
 			await this.db.run(sql)
 			return this
 		})()
 	}
 
-	async validateDetails(formData) {
-		if(formData.type.length === 0) throw new Error('missing type')
-		if(formData.age.length === 0) throw new Error('missing age')
-		if(formData.manufacturer.length === 0) throw new Error('missing manufacturer')
+	async validateAppDetails(formData) {
+		if(formData.appType.length === 0) throw new Error('missing type')
+		if(formData.appAge.length === 0) throw new Error('missing age')
+		if(formData.appMan.length === 0) throw new Error('missing manufacturer')
 		if(formData.desc.length === 0) throw new Error('missing desc')
 		return true
 	}
 
 	async validateUserDetails(formData) {
-		if(formData.user.length === 0) throw new Error('missing user')
+		if(formData.userId.length === 0) throw new Error('missing user')
 		if(formData.createdAt.length === 0) throw new Error('missing timestamp')
+		if(formData.lat.length === 0) throw new Error('missing user latitude location')
+		if(formData.lng.length === 0) throw new Error('missing user longitude location')
 		return true
 	}
 
 	async add(formData) {
 		try {
-			await this.validateDetails(formData)
+			await this.validateAppDetails(formData)
 			await this.validateUserDetails(formData)
-			const {type, age, manufacturer, desc, user, createdAt} = formData
-			const sql = `INSERT INTO jobs (appType, appAge, appMan, desc, createdAt, completed, userId) 
-            VALUES ("${type}","${age}","${manufacturer}","${desc}","${createdAt}", 0, "${user}");`
+			const {appType, appAge, appMan, desc, lat, lng, userId, createdAt} = formData
+			const sql = `INSERT INTO jobs (appType, appAge, appMan, desc, lat, lng, createdAt, userId) 
+            VALUES ("${appType}","${appAge}","${appMan}","${desc}","${lat}","${lng}","${createdAt}","${userId}");`
 			await this.db.run(sql)
 			return true
 		} catch (err) {
@@ -45,8 +53,8 @@ module.exports = class Job {
 		}
 	}
 
-	async getAllUnassigned() {
-		const sql = 'SELECT * FROM jobs WHERE assignedTo IS NULL ORDER BY id DESC'
+	async getAllAvailable() {
+		const sql = 'SELECT * FROM jobs WHERE assigned IS NULL AND quoteId IS NULL ORDER BY id DESC'
 		return await this.db.all(sql)
 	}
 
@@ -62,16 +70,30 @@ module.exports = class Job {
 		}
 	}
 
-	async getTechAssigned(techId) {
-		try {
-			if (techId.length === 0) throw new Error('no argument passed')
-			const sql = `SELECT * FROM jobs WHERE assignedTo='${techId}' ORDER BY id DESC;`
-			const result = await this.db.all(sql)
-			if(result.length === 0) return null
-			return result
-		} catch (err) {
-			throw err
-		}
+	async getTechPendingJobs(pendingQuotes) {
+		const pendingJobs = pendingQuotes.map(async(quote) => {
+			try {
+				const sql = `SELECT * FROM jobs WHERE assigned IS NULL AND quoteId = '${quote.id}' ORDER BY id DESC;`
+				return await this.db.get(sql)
+			} catch (err) {
+				throw err
+			}
+		})
+
+		return Promise.all(pendingJobs).then((techPendingJobs) => techPendingJobs)
+	}
+
+	async getTechAssignedJobs(assignedQuotes) {
+		const assignedJobs = assignedQuotes.map(async(quote) => {
+			try {
+				const sql = `SELECT * FROM jobs WHERE assigned = 1 AND quoteId = '${quote.id}' ORDER BY id DESC;`
+				return await this.db.get(sql)
+			} catch (err) {
+				throw err
+			}
+		})
+
+		return Promise.all(assignedJobs).then((techAssignedJobs) => techAssignedJobs)
 	}
 
 	async getById(id) {
@@ -86,13 +108,31 @@ module.exports = class Job {
 		}
 	}
 
-	async markCompleted(id) {
+	async setQuoteToNull(jobId) {
+		try {
+			const sql = `UPDATE jobs SET quoteId = NULL WHERE id='${jobId}';`
+			await this.db.run(sql)
+		} catch (err) {
+			throw err
+		}
+	}
+
+	async setPending(jobId, quoteId) {
+		try {
+			const sql = `UPDATE jobs SET quoteId = ${quoteId} WHERE id='${jobId}';`
+			await this.db.run(sql)
+		} catch (err) {
+			throw err
+		}
+	}
+
+	async markAssigned(id) {
 		try {
 			let sql = `SELECT COUNT(id) as jobs FROM jobs WHERE id='${id}';`
 			const data = await this.db.get(sql)
 			if (data.jobs === 0) throw new Error('no such job found')
 			else {
-				sql = `UPDATE jobs SET completed = 1 WHERE id='${id}';`
+				sql = `UPDATE jobs SET assigned = 1 WHERE id='${id}';`
 				await this.db.run(sql)
 				return true
 			}
@@ -101,47 +141,29 @@ module.exports = class Job {
 		}
 	}
 
-	async checkQuoteIds(data) {
-		if (data.jobId.length === 0) throw new Error('missing job id')
-		if (data.techId.length === 0) throw new Error('missing tech id')
-	}
-
-	async checkQuoteData(data) {
-		await this.checkQuoteIds(data)
-		if (data.formData.invoice.length === 0) throw new Error('missing job price')
-		if (data.formData.execDate.length === 0) throw new Error('missing job execution date')
-		if (data.formData.execTime.length === 0) throw new Error('missing job execution time block')
-	}
-
-	async limitTechAssignedJobsCount(techId) {
+	async markCompleted(id) {
 		try {
-			const jobCount = 3
-			const sql = `SELECT COUNT(id) as jobs FROM jobs WHERE assignedTo = ${techId} AND completed = 0;`
+			let sql = `SELECT COUNT(id) as jobs FROM jobs WHERE id='${id}';`
 			const data = await this.db.get(sql)
-			if (data.jobs >= jobCount) return {err: 'You cannot have more than 3 unfinished jobs assigned'}
-			else return true
-		} catch (err) {
-			throw err
-		}
-	}
-
-	async provideQuote(quoteData) {
-		try {
-			await this.checkQuoteData(quoteData)
-			const {jobId, techId} = quoteData
-			const {invoice, execDate, execTime} = quoteData.formData
-			let sql = `SELECT COUNT(id) as jobs FROM jobs WHERE id='${jobId}' AND assignedTo IS NOT NULL;`
-			const data = await this.db.get(sql)
-			if (data.jobs !== 0) throw new Error('job already assigned')
+			if (data.jobs === 0) throw new Error('no such job found')
 			else {
-				if (await this.limitTechAssignedJobsCount(techId) === true) {
-					sql = `UPDATE jobs SET price = '${invoice}', executionDate = '${execDate}',
-					 executionTime = '${execTime}', assignedTo = '${techId}' WHERE id='${jobId}';`
-					await this.db.run(sql)
-				}else return await this.limitTechAssignedJobsCount(techId)
+				sql = `UPDATE jobs SET status = 1 WHERE id='${id}';`
+				await this.db.run(sql)
+				return true
 			}
 		} catch (err) {
 			throw err
 		}
 	}
+
+	//TODO: Uncomment the next function for resetting the database and deleting quotes and jobs tables
+
+	// async dropJobsTable() {
+	// 	let sql = 'PRAGMA foreign_keys = OFF;'
+	// 	await this.db.run(sql)
+	// 	sql = 'DROP TABLE jobs;'
+	// 	await this.db.run(sql)
+	// 	sql = 'PRAGMA foreign_keys = ON;'
+	// 	await this.db.run(sql)
+	// }
 }

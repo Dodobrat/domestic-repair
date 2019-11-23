@@ -45,10 +45,18 @@
             <div class="job-item">
                 <span class="job-status">
                     Status:
-                    {{#if completed}}
-                        <i class="fas fa-check text-green"></i>
+                    {{#if assigned}}
+                        {{#if status}}
+                            <i class="fas fa-check text-green"></i>
+                        {{else}}
+                            <i class="fas fa-times text-red"></i>
+                        {{/if}}
                     {{else}}
-                        <i class="fas fa-times text-red"></i>
+                        {{# if quoteId}}
+                            <i class="fas fa-spinner"></i>
+                        {{else}}
+                            <i class="fas fa-times text-red"></i>
+                        {{/if}}
                     {{/if}}
                 </span>
                 <a href="/report/{{id}}">
@@ -110,7 +118,13 @@
                     <label for="desc">Fault description</label>
                     <textarea name="desc" id="desc"></textarea>
                 </div>
+                <div class="modal-form-group">
+                    <label for="address">Drag the marker to your location</label>
+                    <div id="map"></div>
+                </div>
                 <input type="hidden" name="user" value="{{user.id}}">
+                <input type="hidden" name="lat" id="lat" value="">
+                <input type="hidden" name="lng" id="lng" value="">
                 <div class="modal-form-group">
                     <input type="submit" value="Submit">
                 </div>
@@ -120,5 +134,36 @@
 </div>
 
 <script src="../app.js"></script>
+<script>
+    function initMap() {
+    	let latInput = document.getElementById("lat")
+    	let lngInput = document.getElementById("lng")
+
+        latInput.value = 52.406199
+        lngInput.value = -1.508374
+
+        const mapOptions = {
+            zoom: 14,
+            center: new google.maps.LatLng(52.406199,-1.508374)
+        }
+        const map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        let marker = new google.maps.Marker({
+            position: mapOptions.center,
+            map: map,
+            draggable:true,
+            title:"Drag me!"
+        });
+
+        google.maps.event.addListener(marker, 'dragend', function(e){
+            latInput.value = e.latLng.lat();
+            lngInput.value = e.latLng.lng();
+        });
+
+        map.setCenter(marker.position);
+    }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClh5B6yiEc3qd754g2pItmh_FcgXAUr3E&callback=initMap"
+        async defer></script>
 </body>
 </html>

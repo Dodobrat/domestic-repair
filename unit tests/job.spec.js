@@ -109,7 +109,7 @@ describe('add()', () => {
 	})
 })
 
-describe('getAllUnassigned()', () => {
+describe('getAllAvailable()', () => {
 	test('get all jobs', async done => {
 		expect.anything()
 		const job = await new Jobs()

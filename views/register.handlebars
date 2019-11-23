@@ -14,6 +14,12 @@
 <div class="container">
     <form action="/register" enctype="multipart/form-data" method="post" class="user-form">
         <p class="form-title">Register</p>
+        {{#if error}}
+            <p class="error">{{error}}</p>
+        {{/if}}
+        {{#if success}}
+            <p class="success">{{success}}</p>
+        {{/if}}
         <div class="form-group">
             <label for="user">Username</label>
             <input id="user" type="text" name="user" required/>

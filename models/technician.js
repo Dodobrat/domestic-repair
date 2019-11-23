@@ -9,8 +9,11 @@ module.exports = class Technician {
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
-			const sql = `CREATE TABLE IF NOT EXISTS technicians 
-			(id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, email TEXT UNIQUE, pass TEXT);`
+			const sql = `CREATE TABLE IF NOT EXISTS technicians (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			user TEXT, 
+			email TEXT UNIQUE, 
+			pass TEXT);`
 			await this.db.run(sql)
 			return this
 		})()

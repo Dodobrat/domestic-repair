@@ -8,12 +8,10 @@ const koaBody = require('koa-body')({multipart: true, uploadDir: '.'})
 
 /* IMPORT CUSTOM MODULES */
 const Technician = require('../models/technician')
-const User = require('../models/user')
 const Job = require('../models/job')
+const Quote = require('../models/quote')
 const Appliance = require('../models/appliance')
 const Manufacturer = require('../models/manufacturer')
-
-const Mailer = require('../Mail/mailer')
 
 const router = Router({
 	prefix: '/tech'
@@ -21,7 +19,6 @@ const router = Router({
 
 const dbName = 'website.db'
 
-// The secure home page.
 const dataPass = async() => {
 	const dataObj = {}
 	const appliance = await new Appliance(dbName)
@@ -33,16 +30,26 @@ const dataPass = async() => {
 	return dataObj
 }
 
-// Technician Dashboard
+/**
+ * The secure Technician Dashboard page.
+ *
+ * @name Technician Dashboard Page
+ * @route {GET} /tech/dashboard
+ * @authentication This route requires cookie-based authentication.
+ */
 router.get('/dashboard', async ctx => {
 	try {
 		const data = {}
 		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=unauthorized')
 		if(ctx.query.msg) data.success = ctx.query.msg
-		const job = await new Job(dbName)
 		data.tech = ctx.session.tech
-		data.jobs = await job.getAllUnassigned()
-		data.techJobs = await job.getTechAssigned(data.tech.id)
+		const job = await new Job(dbName)
+		const quote = await new Quote(dbName)
+		const techAssignedQuotes = await quote.getAllApprovedQuotesByTechId(data.tech.id)
+		const techPendingQuotes = await quote.getAllPendingQuotesByTechId(data.tech.id)
+		data.jobs = await job.getAllAvailable()
+		data.techJobs = await job.getTechAssignedJobs(techAssignedQuotes)
+		data.techPendingJobs = await job.getTechPendingJobs(techPendingQuotes)
 		data.extra = await dataPass()
 		await ctx.render('tech_home',data)
 	} catch(err) {
@@ -50,29 +57,45 @@ router.get('/dashboard', async ctx => {
 	}
 })
 
-// The user registration page.
+/**
+ * The Technician Register page.
+ *
+ * @name Technician Register Page
+ * @route {GET} /tech/register
+ */
 router.get('/register', async ctx => await ctx.render('tech_add'))
 
-// The script to process new user registrations.
+/**
+ * The script to process new technician registrations.
+ *
+ * @name Technician Register Script
+ * @route {POST} /tech/register
+ */
 router.post('/register', koaBody, async ctx => {
 	try {
 		const {user, email, pass} = ctx.request.body
 		const tech = await new Technician(dbName)
 		ctx.session = await tech.register(user, email, pass)
-		ctx.redirect('/tech/dashboard?msg=user added')
+		ctx.redirect('/tech/dashboard')
 	} catch(err) {
-		await ctx.render('error', {message: err.message})
+		await ctx.render('tech_add', {error: err.message})
 	}
 })
 
-// Login page
-router.get('/login', async ctx => {
-	const data = {}
-	if(ctx.query.msg) data.error = ctx.query.msg
-	await ctx.render('tech_login', data)
-})
+/**
+ * The Technician Login page.
+ *
+ * @name Technician Login Page
+ * @route {GET} /tech/login
+ */
+router.get('/login', async ctx => await ctx.render('tech_login'))
 
-// Login user
+/**
+ * The script to process technician login.
+ *
+ * @name Technician Login Script
+ * @route {POST} /tech/login
+ */
 router.post('/login', async ctx => {
 	try {
 		const {user, pass} = ctx.request.body
@@ -80,77 +103,87 @@ router.post('/login', async ctx => {
 		ctx.session = await tech.login(user, pass)
 		return ctx.redirect('/tech/dashboard?msg=welcome back')
 	} catch(err) {
-		await ctx.render('error', {message: err.message})
+		await ctx.render('tech_login', {error: err.message})
 	}
 })
 
-// Logout user
+/**
+ * Deleting technician info on logout.
+ *
+ * @name Logout
+ * @route {GET} /tech/logout
+ */
 router.get('/logout', async ctx => {
 	ctx.session.authorised = null
 	ctx.session.tech = null
 	ctx.redirect('/tech/login')
 })
 
-// Get job page
-router.get('/report/:id', async ctx => {
-	const data = {}
-	if(ctx.query.err) data.error = ctx.query.err
-	const job = await new Job(dbName)
-	const jobResult = await job.getById(ctx.params.id)
-	const user = await new User(dbName)
-	const users = await user.getById(jobResult.userId)
-	data.tech = ctx.session.tech
-	data.job = jobResult
-	data.jobUser = users
-	await ctx.render('tech_report', data)
-})
-
-// Mark as Complete
-router.get('/check/:id', async ctx => {
-	const techJob = await new Job(dbName)
-	await techJob.markCompleted(ctx.params.id)
-	await ctx.redirect('back')
-})
-
-const gatherMailData = async(jobId) => {
-	const mailData = {}
-	const job = await new Job(dbName)
-	const jobRes = await job.getById(jobId)
-	const user = await new User(dbName)
-	mailData.user = await user.getById(jobRes.userId)
-	mailData.job = jobRes
-	return mailData
-}
-
-// Provide Quote
-router.post('/quote/:id', async ctx => {
-	const data = {}
-	data.jobId = ctx.params.id
-	data.techId = ctx.session.tech.id
-	data.formData = ctx.request.body
-	const techJob = await new Job(dbName)
-	const result = await techJob.provideQuote(data)
-	if(result === undefined) {
-		await ctx.redirect('back')
-		const mailer = await new Mailer()
-		const {user, job} = await gatherMailData(data.jobId)
-		await mailer.mail(user, ctx.session.tech, job)
-	} else await ctx.redirect(`/tech/report/${data.jobId}?err=${result.err}`)
-})
-
-// Add Appliance
+/**
+ * Script for adding appliances.
+ *
+ * @name Appliance
+ * @route {POST} /tech/appliance
+ */
 router.post('/appliance', async ctx => {
 	const appliance = await new Appliance(dbName)
-	await appliance.add(ctx.request.body.type)
+	const type = ctx.request.body.type
+	await appliance.add(type)
 	await ctx.redirect('/tech/dashboard')
 })
 
-// Add Manufacturer
+/**
+ * Script for adding manufacturers.
+ *
+ * @name Manufacturer
+ * @route {POST} /tech/manufacturer
+ */
 router.post('/manufacturer', async ctx => {
 	const manufacturer = await new Manufacturer(dbName)
-	await manufacturer.add(ctx.request.body.name)
+	const name = ctx.request.body.name
+	await manufacturer.add(name)
 	await ctx.redirect('/tech/dashboard')
 })
+/**
+ * Script for deleting appliances.
+ *
+ * @name Appliance
+ * @route {GET} /tech/remove-app/:id
+ */
+router.get('/remove-app/:id', async ctx => {
+	const app = await new Appliance(dbName)
+	await app.remove(ctx.params.id)
+	await ctx.redirect('/tech/dashboard')
+})
+/**
+ * Script for deleting manufacturers.
+ *
+ * @name Manufacturer
+ * @route {GET} /tech/remove-man/:id
+ */
+router.get('/remove-man/:id', async ctx => {
+	const man = await new Manufacturer(dbName)
+	await man.remove(ctx.params.id)
+	await ctx.redirect('/tech/dashboard')
+})
+
+/**
+ * Routes for resetting the database / Uncomment for use
+ *
+ * @route {GET} /drop/table/q   ||   /drop/table/j
+ */
+
+// router.get('/drop/table/q', async ctx => {
+// 	const quote = await new Quote(dbName)
+// 	await quote.dropQuoteTable()
+// 	ctx.body = 'quotes table dropped'
+// })
+//
+// router.get('/drop/table/j', async ctx => {
+// 	const job = await new Job(dbName)
+// 	await job.dropJobsTable()
+// 	ctx.body = 'jobs table dropped'
+// })
 
 module.exports = router
 

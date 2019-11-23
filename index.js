@@ -14,6 +14,8 @@ const session = require('koa-session')
 
 // IMPORT ROUTES
 const users = require('./routes/users')
+const jobs = require('./routes/jobs')
+const quotes = require('./routes/quotes')
 const technicians = require('./routes/technicians')
 
 const app = new Koa()
@@ -30,6 +32,8 @@ const defaultPort = 5000
 const port = process.env.PORT || defaultPort
 
 app.use(users.routes())
+app.use(jobs.routes())
+app.use(quotes.routes())
 app.use(technicians.routes())
 
 app.use(router.routes())

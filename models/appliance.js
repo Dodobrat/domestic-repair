@@ -29,7 +29,12 @@ module.exports = class Appliance {
 	}
 
 	async getAll() {
-		const sql = 'SELECT * FROM appliances'
+		const sql = 'SELECT * FROM appliances ORDER BY id DESC'
 		return await this.db.all(sql)
+	}
+
+	async remove(id) {
+		const sql = `DELETE FROM appliances WHERE id = ${id};`
+		await this.db.run(sql)
 	}
 }

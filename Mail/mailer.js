@@ -5,15 +5,15 @@
 const nodemailer = require('nodemailer')
 
 module.exports = class Mailer {
-	async message(user, tech, job) {
+	async message(user, tech, quote) {
 		return `<h3>Hi ${user.user}</h3>
 			<br>
 			<p>We are happy to work with you and happy to inform you that ${tech.user} has been assigned
 			to work with you!</p>
 			<br>
-			<p>Upon completion of job '${job.id}', which will take place on ${job.executionDate} 
-			at ${job.executionTime},
-			you will have to pay ${job.price}.</p>
+			<p>Upon completion of job '${quote.jobId}', which will take place on ${quote.executionDate} 
+			at ${quote.executionTime},
+			you will have to pay £ ${quote.price}.</p>
 			<br>
 			<p>Hope everything went well!</p>
 			<br>
@@ -23,7 +23,7 @@ module.exports = class Mailer {
 	}
 
 
-	async mail(user, tech, job) {
+	async mail(user, tech, quote) {
 		const transporter = nodemailer.createTransport({
 			host: 'smtp.mailtrap.io',
 			port: 2525,
@@ -35,8 +35,8 @@ module.exports = class Mailer {
 		const mailOptions = {
 			from: `${tech.email}`,
 			to: `${user.email}`,
-			subject: `Quote for job ${job.id}`,
-			html: await this.message(user, tech, job)
+			subject: `Quote for job ${quote.jobId}`,
+			html: await this.message(user, tech, quote)
 		}
 		transporter.sendMail(mailOptions, (error, info) => {
 			if (error) console.log(error)

@@ -10,7 +10,6 @@ const koaBody = require('koa-body')({multipart: true, uploadDir: '.'})
 
 /* IMPORT CUSTOM MODULES */
 const User = require('../models/user')
-const Technician = require('../models/technician')
 const Job = require('../models/job')
 const Appliance = require('../models/appliance')
 const Manufacturer = require('../models/manufacturer')
@@ -19,13 +18,6 @@ const router = new Router
 
 const dbName = 'website.db'
 
-/**
- * The secure home page.
- *
- * @name Home Page
- * @route {GET} /
- * @authentication This route requires cookie-based authentication.
- */
 const dataPass = async() => {
 	const dataObj = {}
 	const appliance = await new Appliance(dbName)
@@ -37,6 +29,13 @@ const dataPass = async() => {
 	return dataObj
 }
 
+/**
+ * The secure home page.
+ *
+ * @name Home Page
+ * @route {GET} /
+ * @authentication This route requires cookie-based authentication.
+ */
 router.get('/', async ctx => {
 	try {
 		const data = {}
@@ -46,7 +45,7 @@ router.get('/', async ctx => {
 		const job = await new Job(dbName)
 		data.userJobs = await job.getByUser(data.user.id)
 		data.extra = await dataPass()
-		await ctx.render('index',data)
+		await ctx.render('index', data)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
@@ -75,70 +74,42 @@ router.post('/register', koaBody, async ctx => {
 		ctx.session = await userModel.register(user, email, pass, avatar)
 		ctx.redirect('/?msg=user added')
 	} catch(err) {
-		await ctx.render('error', {message: err.message})
+		await ctx.render('register', {error: err.message})
 	}
 })
-
-router.get('/login', async ctx => {
-	const data = {}
-	if(ctx.query.msg) data.error = ctx.query.msg
-	if(ctx.query.user) data.user = ctx.query.user
-	await ctx.render('login', data)
-})
-
+/**
+ * The user login page.
+ *
+ * @name Login Page
+ * @route {GET} /login
+ */
+router.get('/login', async ctx => await ctx.render('login'))
+/**
+ * The script to process user login.
+ *
+ * @name Login Script
+ * @route {POST} /login
+ */
 router.post('/login', async ctx => {
 	try {
-		const body = ctx.request.body
-		const user = await new User(dbName)
-		ctx.session = await user.login(body.user, body.pass)
+		const {user, pass} = ctx.request.body
+		const userModel = await new User(dbName)
+		ctx.session = await userModel.login(user, pass)
 		return ctx.redirect('/?msg=welcome back')
 	} catch(err) {
-		await ctx.render('error', {message: err.message})
+		await ctx.render('login', {error: err.message})
 	}
 })
-
+/**
+ * Deleting user info on logout.
+ *
+ * @name Logout
+ * @route {GET} /logout
+ */
 router.get('/logout', async ctx => {
 	ctx.session.authorised = null
 	ctx.session.user = null
 	ctx.redirect('/login')
-})
-
-const generateTimestamp = () => {
-	const date = new Date()
-	const timeDMY = `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`
-	const timeHMS = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
-	return `${timeDMY} ${timeHMS}`
-}
-
-router.post('/report', async ctx => {
-	try{
-		const {type, age, manufacturer, desc, user} = ctx.request.body
-		const newJob = {
-			desc: desc,
-			type: type,
-			age: age,
-			manufacturer: manufacturer,
-			user: user,
-			createdAt: generateTimestamp()
-		}
-		const job = await new Job(dbName)
-		await job.add(newJob)
-		ctx.redirect('/?msg=job added')
-	} catch (err) {
-		throw err
-	}
-})
-
-router.get('/report/:id', async ctx => {
-	const data = {}
-	if(ctx.session.authorised === true) data.user = ctx.session.user
-	const job = await new Job(dbName)
-	const tech = await new Technician(dbName)
-	const jobRes = await job.getById(ctx.params.id)
-	const techRes = await tech.getById(jobRes.assignedTo)
-	if(techRes !== null) data.tech = techRes
-	if(jobRes.length !== 0) data.job = jobRes
-	await ctx.render('report', data)
 })
 
 module.exports = router

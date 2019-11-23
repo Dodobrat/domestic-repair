@@ -13,7 +13,11 @@ module.exports = class User {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			const sql = `CREATE TABLE IF NOT EXISTS users (
-			id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, email TEXT UNIQUE, pass TEXT, avatar VARCHAR(255));`
+			id INTEGER PRIMARY KEY AUTOINCREMENT, 
+			user TEXT, 
+			email TEXT UNIQUE, 
+			pass TEXT, 
+			avatar TEXT);`
 			await this.db.run(sql)
 			return this
 		})()

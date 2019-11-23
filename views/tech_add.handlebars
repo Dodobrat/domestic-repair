@@ -14,6 +14,9 @@
 <div class="container">
     <form action="/tech/register" enctype="multipart/form-data" method="post" class="user-form">
         <p class="form-title">Register Technician</p>
+        {{#if error}}
+            <p class="error">{{error}}</p>
+        {{/if}}
         <div class="form-group">
             <label for="user">Username</label>
             <input id="user" type="text" name="user"/>

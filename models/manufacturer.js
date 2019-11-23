@@ -29,7 +29,12 @@ module.exports = class Manufacturer {
 	}
 
 	async getAll() {
-		const sql = 'SELECT * FROM manufacturers'
+		const sql = 'SELECT * FROM manufacturers ORDER BY id DESC'
 		return await this.db.all(sql)
+	}
+
+	async remove(id) {
+		const sql = `DELETE FROM manufacturers WHERE id = ${id};`
+		await this.db.run(sql)
 	}
 }

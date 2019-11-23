@@ -8,6 +8,16 @@
 
 /*DEFAULT*/
 
+#map {
+    height: 400px;
+    width: 100%;
+}
+
+#jobMap {
+    height: 400px;
+    width: 100%;
+}
+
 html {
     font-size: 14px;
 }
@@ -33,8 +43,16 @@ body {
     padding: 0 1rem;
 }
 
+.disabled{
+    pointer-events: none;
+}
+
 .bg-green{
     background: var(--success) !important;
+}
+
+.bg-blue{
+    background: var(--secondary-bg) !important;
 }
 
 .text-white{
