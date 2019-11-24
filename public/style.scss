@@ -1,0 +1,638 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito+Sans&display=swap');
+
+//TYPOGRAPHY
+$family: 'Nunito Sans', sans-serif;
+$primary-font: #333;
+$secondary-font: #545454;
+
+//COLORS
+$bg: #f1f1f1;
+$card-bg: #fff;
+$accent: #0477A6;
+$dark-accent: #024059;
+$light-accent: #3585A6;
+$white: #fff;
+$error: #FA312B;
+$success: #66B22B;
+
+//UTILS
+$fast: all 0.1s ease-in-out;
+$radius: 5px;
+$small-shadow: 0px 3px 10px -3px rgba(0,0,0,0.15);
+
+@mixin buttonPress {
+    &:active{
+        transition: $fast;
+        transform: scale(0.95);
+    }
+}
+
+@mixin focusRemove {
+    &:focus{
+        outline: none;
+    }
+}
+
+html {
+    font-size: 14px;
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: $family;
+    background: $bg;
+    margin: 0;
+    color: $primary-font;
+}
+
+.toast{
+    position: fixed;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: $white;
+    padding: 0.5rem 1rem;
+    border-radius: $radius;
+    box-shadow: $small-shadow;
+    max-width: 300px;
+    min-width: 0;
+    &.success{
+        background: $success;
+    }
+    &.error{
+        background: $error;
+    }
+    p{
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 400;
+        letter-spacing: 1px;
+        color: $white;
+        text-transform: capitalize;
+    }
+}
+
+.container{
+    max-width: 1140px;
+    min-width: 0;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+}
+
+.hide-lg{
+    @media (min-width: 992px) {
+        display: none;
+    }
+}
+
+.hide-md{
+    @media (max-width: 991px) {
+        display: none;
+    }
+}
+
+.text-green{
+    color: $success !important;
+}
+
+.text-accent{
+    color: $accent !important;
+}
+
+.text-red{
+    color: $error !important;
+}
+
+.user-form{
+    max-width: 25rem;
+    min-width: 0;
+    width: 100%;
+    margin: 2rem auto;
+    background: $card-bg;
+    box-shadow: $small-shadow;
+    border-radius: $radius;
+    padding: 1.5rem;
+    .form-title{
+        text-align: center;
+        font-weight: 500;
+        font-size: 1.5rem;
+    }
+    .error{
+        color: $error;
+        text-align: center;
+        font-size: 1.2rem;
+    }
+    .form-group{
+        width: 100%;
+        label{
+            display: block;
+            width: 100%;
+            font-weight: 400;
+        }
+        input{
+            transition: $fast;
+            padding: 0.65rem 0;
+            text-indent: 1rem;
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid $accent;
+            margin: 0 0 1rem 0;
+            &:focus{
+                transition: $fast;
+                outline: none;
+                background: $bg;
+            }
+            &[type="submit"]{
+                transition: $fast;
+                border: none;
+                background: $light-accent;
+                color: $white;
+                padding: 0.75rem 0;
+                cursor: pointer;
+                @include focusRemove();
+                @include buttonPress();
+            }
+            &[type="file"]{
+                border: none;
+                text-indent: 0;
+                background: $card-bg;
+                padding: 0.75rem 0;
+                cursor: pointer;
+                @include focusRemove();
+            }
+        }
+    }
+    .form-redirector{
+        margin: 0;
+        a{
+            color: $accent;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    }
+}
+
+.navbar{
+    width: 100%;
+    background: $light-accent;
+    padding: 0.75rem;
+    .nav-container{
+        display: flex;
+        align-items: center;
+        .nav-title{
+            flex: 1;
+            font-weight: 400;
+            font-size: 1.2rem;
+            color: $white;
+            text-decoration: none;
+        }
+        .current-user{
+            display: flex;
+            align-items: center;
+            img{
+                width: 2rem;
+                height: 2rem;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+            .badge{
+                background: rgba(0,0,0,0.2);
+                padding: 0.25rem 0.5rem;
+                border-radius: $radius;
+                font-size: 0.85rem;
+            }
+            span{
+                padding: 0 1rem 0 0.5rem;
+                color: $white;
+            }
+        }
+        .logout{
+            padding: 0 0.5rem 0 1.5rem;
+            color: $white;
+            text-decoration: none;
+            @include buttonPress();
+            i{
+                padding: 0 0 0 0.5rem;
+                vertical-align: baseline;
+                @media (max-width: 991px){
+                    font-size: 1.5rem;
+                }
+            }
+        }
+    }
+}
+
+.hero-section{
+    padding: 1.5rem 0 0 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    .go-back{
+        button{
+            background: none;
+            border: none;
+            cursor: pointer;
+            @include buttonPress();
+            @include focusRemove();
+            font-size: 1.1rem;
+            padding: 0 1rem;
+            i{
+                color: $accent;
+            }
+        }
+        @media(max-width: 768px){
+            margin: 0 0 1rem 0;
+        }
+    }
+    .title{
+        margin: 0;
+        flex: 1;
+        padding: 0 0.5rem;
+        font-size: 1.3rem;
+        font-weight: 600;
+        width: 300px;
+        color: $secondary-font;
+        @media(max-width: 768px){
+            flex: 0 0 100%;
+            margin: 0 0 1rem 0;
+        }
+    }
+    .actions{
+        flex: 2;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        @media(max-width: 768px){
+            flex: 0 0 100%;
+            justify-content: flex-start;
+        }
+        .status-report{
+            font-size: 1.1rem;
+            padding: 0 1rem;
+            i{
+                padding: 0 0 0 0.5rem;
+            }
+        }
+        button{
+            border: none;
+            border-radius: $radius;
+            padding: 0.75rem 1rem;
+            background: $success;
+            color: $white;
+            margin: 0 0 0 0.5rem;
+            @include focusRemove();
+            @include buttonPress();
+            cursor: pointer;
+            i{
+                padding: 0 0.5rem 0 0 ;
+            }
+        }
+        .pending{
+            background: $light-accent;
+        }
+    }
+}
+
+.job-list{
+    width: 100%;
+    background: $card-bg;
+    box-shadow: $small-shadow;
+    border-radius: $radius;
+    padding: 1rem 2rem;
+    margin: 1.5rem 0 0 0;
+    .job-list-header{
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 0.5rem 0 1rem 0;
+        box-shadow: 0 10px 10px -10px rgba(0,0,0,0.2);
+        .job-list-title{
+            flex: 1 0 auto;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-transform: capitalize;
+            margin: 0;
+            @media (max-width: 769px) {
+                flex: 0 0 100%;
+                text-align: center;
+                margin: 0 0 1rem 0;
+            }
+            i{
+                color: $light-accent;
+                padding: 0 0.5rem 0 0;
+            }
+        }
+        .filter-box{
+            flex: 0 1 400px;
+            display: flex;
+            align-items: center;
+            form{
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                width: 100%;
+                label{
+                    white-space: nowrap;
+                }
+                select{
+                    max-width: 150px;
+                    width: 100%;
+                    transition: $fast;
+                    padding: 0.25rem 0;
+                    margin: 0 0.5rem;
+                    text-indent: 0.5rem;
+                    border: 1px solid rgba(0,0,0,0.2);
+                    border-radius: $radius;
+                    @include focusRemove();
+                }
+                input{
+                    transition: $fast;
+                    border: none;
+                    background: $light-accent;
+                    color: $white;
+                    padding: 0.375rem 0.5rem;
+                    border-radius: $radius;
+                    cursor: pointer;
+                    @include focusRemove();
+                    @include buttonPress();
+                }
+            }
+            @media (max-width: 769px) {
+                flex: 0 0 100%;
+                form{
+                    justify-content: center;
+                }
+            }
+        }
+    }
+    .jobs-container{
+        max-height: 70vh;
+        overflow: hidden;
+        overflow-y: auto;
+        .job-item{
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 0.75rem 0.5rem;
+            transition: $fast;
+            border-bottom: 1px solid rgba($color: $accent, $alpha: 0.05);
+            &:last-child{
+                border-bottom: none;
+            }
+            .job-status{
+                white-space: nowrap;
+                flex: 0 0 40px;
+                font-weight: 600;
+                @media (min-width: 992px){
+                    flex: 0 0 80px;
+                }
+                i{
+                    padding: 0 0.25rem;
+                }
+            }
+            .job-link{
+                color: $primary-font;
+                text-decoration: none;
+                flex: 1;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                &:hover{
+                    color: $dark-accent
+                }
+            }
+            small{
+                flex: 0 0 auto;
+                @media(max-width: 769px){
+                    flex: 0 0 100%;
+                    margin: 0.5rem 0;
+                    text-align: center;
+                }
+                background: rgba(0,0,0,0.1);
+                padding: 0.5rem 0.75rem;
+                border-radius: $radius;
+                font-size: 0.8rem;
+                span{
+
+                }
+            }
+            &:hover{
+                transition: $fast;
+                background: rgba($color: $accent, $alpha: 0.05);
+            }
+        }
+    }
+}
+
+.job-details{
+    width: 100%;
+    background: $card-bg;
+    box-shadow: $small-shadow;
+    border-radius: $radius;
+    padding: 1rem 2rem 2rem 2rem;
+    margin: 1.5rem 0 0 0;
+    .title{
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 0.5rem 0 1rem 0;
+        i{
+            color: $accent;
+            padding: 0 0.5rem;
+        }
+    }
+    .keywords{
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        padding: 0.5rem 0 1rem 0;
+        span{
+            font-weight: 600;
+            margin: 0 0.75rem 0 0;
+            .tag{
+                background: $dark-accent;
+                color: $white;
+                padding: 0.2rem 0.5rem;
+                border-radius: $radius;
+                font-size: 0.8rem;
+                font-weight: 400;
+                margin: 0 0.25rem;
+            }
+            @media (max-width: 768px) {
+                display: block;
+                margin: 0.5rem 0;
+                .tag{
+                    display: inline-block;
+                    width: auto;
+                }
+            }
+        }
+    }
+    .created{
+        font-weight: 400;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        padding: 0 0 1rem 0;
+        .secondary{
+            font-weight: 800;
+            font-style: italic;
+            color: $secondary-font;
+        }
+    }
+    .job-desc{
+        font-size: 1.1rem;
+        p{
+            margin: 0;
+        }
+    }
+    .quote-action{
+        border-top: 1px solid rgba(0,0,0,0.1);
+        padding: 1.5rem 0 0 0;
+        a{
+            text-decoration: none;
+            color: $white;
+            button{
+                color: $white;
+                border: none;
+                border-radius: $radius;
+                padding: 0.5rem 0.75rem;
+                cursor: pointer;
+                @include buttonPress();
+                @include focusRemove();
+                &.accept{
+                    background: $success;
+                }
+                &.decline{
+                    background: $error;
+                }
+            }
+        }
+        p{
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+    }
+    .log{
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        &:last-child{
+            border-bottom: none;
+        }
+        span{
+            flex: 1;
+            font-size: 1.1rem;
+            @media(max-width: 500px){
+                flex: 0 0 100%;
+            }
+        }
+        .time{
+            flex: 0 0 150px;
+            text-align: right;
+            font-size: 0.9rem;
+            font-weight: 600;
+            @media(max-width: 500px){
+                flex: 0 0 100%;
+                text-align: left;
+            }
+        }
+    }
+    #jobMap{
+        height: 350px;
+        width: 100%;
+    }
+}
+
+.row-wrap{
+    display: flex;
+    align-items: flex-start;
+    margin: 0 -0.5rem;
+    .wrap-list{
+        flex: 1;
+        background: $card-bg;
+        box-shadow: $small-shadow;
+        border-radius: $radius;
+        padding: 1rem 2rem;
+        margin: 1.5rem 0.5rem;
+        .wrap-list-header{
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 0.5rem 0 1rem 0;
+            box-shadow: 0 10px 10px -10px rgba(0,0,0,0.2);
+            .wrap-list-title{
+                flex: 1;
+                font-size: 1rem;
+                font-weight: 600;
+                text-transform: capitalize;
+                margin: 0;
+                @media (max-width: 769px) {
+                    flex: 0 0 100%;
+                    text-align: center;
+                    margin: 0 0 1rem 0;
+                }
+                i{
+                    color: $light-accent;
+                    padding: 0 0.5rem 0 0;
+                }
+            }
+        }
+        .wrap-container{
+            .wrap-item{
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+                &:last-child{
+                    border-bottom: none;
+                }
+                p{
+                    flex: 1;
+                }
+                a{
+                    flex: 0 0 50px;
+                    text-align: center;
+                    color: $error;
+                    text-decoration: none;
+                    @include buttonPress();
+                    @include focusRemove();
+                }
+            }
+        }
+    }
+}
+
+.modal-overlay{
+    transition: $fast;
+    transition-delay: 0.1s;
+    position: fixed;
+    height: 100vh;
+    width: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    background: rgba(0,0,0,0.6);
+    .modal-window{
+        transition: $fast;
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+    &.show{
+        transition: $fast;
+        opacity: 1;
+        pointer-events: auto;
+        .modal-window{
+            transition: $fast;
+            transition-delay: 0.1s;
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}

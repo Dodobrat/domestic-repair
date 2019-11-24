@@ -14,123 +14,164 @@
 <body>
 <nav class="navbar">
     <div class="container nav-container">
-        <a class="nav-title" href="/tech/dashboard">Domestic Repair</a>
-        <ul>
-            <li>
-                {{#if tech.user}}
-                    <span class="badge">Technician</span>
-                    Hi, {{tech.user}}
-                {{/if}}
-            </li>
-            <a href="/tech/logout">
-                <li>
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </li>
-            </a>
-        </ul>
+        <a class="nav-title" href="/tech/dashboard">
+            <span class="hide-lg">DR</span>
+            <span class="hide-md">Domestic Repair</span>
+        </a>
+        <div class="current-user">
+            <span class="badge">Technician</span>
+            <span class="hide-md">Hi, {{tech.user}}</span> 
+        </div>
+        <a class="logout" href="/tech/logout">
+            <span class="hide-md">Logout</span> <i class="fas fa-power-off"></i>
+        </a>
     </div>
 </nav>
 <div class="container">
     {{#if success}}
-        <p class="success">{{success}}</p>
+        <div class="toast success">
+            <p>{{success}}</p>
+        </div>
     {{/if}}
     {{#if error}}
-        <p class="error">{{error}}</p>
+        <div class="toast error">
+            <p>{{error}}</p>
+        </div>
     {{/if}}
-    <div class="hero-section tech-hero">
+    <div class="hero-section">
         <h2 class="title">Dashboard</h2>
-        <button id="add-appliance"><i class="fas fa-blender-phone"></i> Add Supported Appliance</button>
-        <button id="add-manufacturer"><i class="far fa-copyright"></i> Add Supported Manufacturer</button>
-        <form action="/tech/schedule/{{tech.id}}" method="post">
-            <input type="submit" value="Download Schedule">
-        </form>
+        <div class="actions">
+            <button id="add-appliance"><i class="fas fa-blender-phone"></i> Add Appliance</button>
+            <button id="add-manufacturer"><i class="far fa-copyright"></i> Add Manufacturer</button>
+            <form action="/tech/schedule/{{tech.id}}" method="post">
+                <input type="submit" value="Download Schedule">
+            </form>
+        </div>
     </div>
     <div class="job-list">
-        <p class="job-list-title"><i class="fas fa-clipboard-list"></i> available jobs</p>
-        {{#each jobs}}
-            <div class="job-item">
-                 <span class="job-status">
-                    Status:
-                     {{#if status}}
-                         <i class="fas fa-check text-green"></i>
-                     {{else}}
-                         <i class="fas fa-times text-red"></i>
-                     {{/if}}
-                </span>
-                <a href="/tech/report/{{id}}">
-                    <span>{{desc}}</span>
+        <div class="job-list-header">
+            <p class="job-list-title"><i class="fas fa-clipboard-list"></i> available jobs</p>
+        </div>
+        <div class="jobs-container">
+            {{#if jobs}}
+                {{#each jobs}}
+                <div class="job-item">
+                    <span class="job-status">
+                        <span class="hide-md">Status:</span>
+                        {{#if status}}
+                            <i class="fas fa-check text-green"></i>
+                        {{else}}
+                            <i class="fas fa-times text-red"></i>
+                        {{/if}}
+                    </span>
+                    <a class="job-link" href="/tech/report/{{id}}">
+                        {{desc}}
+                    </a>
                     <small>
                         <span class="secondary">{{appType}}</span> |
                         <span class="secondary">{{appAge}} years</span> |
                         <span class="secondary">{{appMan}}</span>
                     </small>
-                </a>
-            </div>
-        {{/each}}
-    </div>
-    <br>
-    <div class="job-list">
-        <p class="job-list-title"><i class="fas fa-clipboard-list"></i> pending jobs</p>
-        {{#each techPendingJobs}}
-            <div class="job-item">
-                 <span class="job-status">
-                    Status: <i class="fas fa-spinner"></i>
-                </span>
-                <a href="/tech/report/{{id}}">
-                    <span>{{desc}}</span>
-                    <small>
-                        <span class="secondary">{{appType}}</span> |
-                        <span class="secondary">{{appAge}} years</span> |
-                        <span class="secondary">{{appMan}}</span>
-                    </small>
-                </a>
-            </div>
-        {{/each}}
-    </div>
-    <br>
-    <div class="job-list">
-        <p class="job-list-title"><i class="fas fa-clipboard-list"></i> your jobs</p>
-        {{#each techJobs}}
-            <div class="job-item">
-                <span class="job-status">
-                    Status:
-                    {{#if status}}
-                        <i class="fas fa-check text-green"></i>
-                    {{else}}
-                        <i class="fas fa-times text-red"></i>
-                    {{/if}}
-                </span>
-                <a href="/tech/report/{{id}}">
-                    <span>{{desc}}</span>
-                    <small>
-                        <span class="secondary">{{appType}}</span> |
-                        <span class="secondary">{{appAge}} years</span> |
-                        <span class="secondary">{{appMan}}</span>
-                    </small>
-                </a>
-            </div>
-        {{/each}}
-    </div>
-    <br>
-    <div class="row-wrap">
-        <div class="wrap-list">
-            <p class="wrap-list-title">All Supported Appliances</p>
-            {{#each extra.appliances}}
-                <div class="wrap-item">
-                    <p>{{type}}</p>
-                    <a href="/tech/remove-app/{{id}}">Remove</a>
                 </div>
             {{/each}}
+            {{else}}
+            <p class="no-more">No jobs found! :(</p>
+            {{/if}}
+        </div>
+    </div>
+    <div class="job-list">
+        <div class="job-list-header">
+            <p class="job-list-title"><i class="fas fa-spinner"></i> pending jobs</p>
+        </div>
+        <div class="jobs-container">
+            {{#if techPendingJobs}}
+                {{#each techPendingJobs}}
+                <div class="job-item">
+                    <span class="job-status">
+                        <span class="hide-md">Status:</span>
+                        <i class="fas fa-spinner"></i>
+                    </span>
+                    <a class="job-link" href="/tech/report/{{id}}">
+                        {{desc}}
+                    </a>
+                    <small>
+                        <span class="secondary">{{appType}}</span> |
+                        <span class="secondary">{{appAge}} years</span> |
+                        <span class="secondary">{{appMan}}</span>
+                    </small>
+                </div>
+            {{/each}}
+            {{else}}
+            <p class="no-more">No jobs found! :(</p>
+            {{/if}}
+        </div>
+    </div>
+    <div class="job-list">
+        <div class="job-list-header">
+            <p class="job-list-title"><i class="fas fa-tasks"></i> your jobs</p>
+        </div>
+        <div class="jobs-container">
+            {{#if techJobs}}
+                {{#each techJobs}}
+                    <div class="job-item">
+                        <span class="job-status">
+                            Status:
+                            {{#if status}}
+                                <i class="fas fa-check text-green"></i>
+                            {{else}}
+                                <i class="fas fa-times text-red"></i>
+                            {{/if}}
+                        </span>
+                        <a class="job-link" href="/tech/report/{{id}}">
+                            {{desc}}
+                        </a>
+                        <small>
+                            <span class="secondary">{{appType}}</span> |
+                            <span class="secondary">{{appAge}} years</span> |
+                            <span class="secondary">{{appMan}}</span>
+                        </small>
+                    </div>
+                {{/each}}
+            {{else}}
+            <p class="no-more">No jobs found! :(</p>
+            {{/if}}
+        </div>
+    </div>
+    <div class="row-wrap">
+        <div class="wrap-list">
+            <div class="wrap-list-header">
+                <p class="wrap-list-title"><i class="fas fa-blender-phone"></i> All Supported Appliances</p>
+            </div>
+            <div class="wrap-container">
+                {{#if extra.appliances}}
+                    {{#each extra.appliances}}
+                        <div class="wrap-item">
+                            <p>{{type}}</p>
+                            <a href="/tech/remove-app/{{id}}"><i class="far fa-trash-alt"></i></a>
+                        </div>
+                    {{/each}}
+                {{else}}
+                    <p class="no-more">No appliances found! :(</p>
+                {{/if}}
+            </div>
         </div>
         <br>
         <div class="wrap-list">
-            <p class="wrap-list-title">All Supported Manufacturers</p>
-            {{#each extra.manufacturers}}
-                <div class="wrap-item">
-                    <p>{{name}}</p>
-                    <a href="/tech/remove-man/{{id}}">Remove</a>
-                </div>
-            {{/each}}
+            <div class="wrap-list-header">
+                <p class="wrap-list-title"><i class="far fa-copyright"></i> All Supported Manufacturers</p>
+            </div>
+            <div class="wrap-container">
+                {{#if extra.manufacturers}}
+                    {{#each extra.manufacturers}}
+                        <div class="wrap-item">
+                            <p>{{name}}</p>
+                            <a href="/tech/remove-man/{{id}}"><i class="far fa-trash-alt"></i></a>
+                        </div>
+                    {{/each}}
+                {{else}}
+                    <p class="no-more">No manufacturers found! :(</p>
+                {{/if}}
+            </div>
         </div>
     </div>
 </div>

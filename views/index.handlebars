@@ -14,70 +14,85 @@
 <body>
 <nav class="navbar">
     <div class="container nav-container">
-        <a class="nav-title" href="/">Domestic Repair</a>
-        <ul>
-            <li>
-                <img src="{{user.avatar}}" alt="">
-                Hi, {{user.user}}
-            </li>
-            <a href="/logout">
-                <li>
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </li>
-            </a>
-        </ul>
+        <a class="nav-title" href="/">
+            <span class="hide-lg">DR</span>
+            <span class="hide-md">Domestic Repair</span>
+        </a>
+        <div class="current-user">
+            <img src="{{user.avatar}}" alt="">
+            <span class="hide-md">Hi, {{user.user}}</span> 
+        </div>
+        <a class="logout" href="/logout">
+            <span class="hide-md">Logout</span> <i class="fas fa-power-off"></i>
+        </a>
     </div>
 </nav>
 <div class="container">
     {{#if success}}
-        <p class="success">{{success}}</p>
+        <div class="toast success">
+            <p>{{success}}</p>
+        </div>
     {{/if}}
     {{#if error}}
-        <p class="error">{{error}}</p>
+        <div class="toast error">
+            <p>{{error}}</p>
+        </div>
     {{/if}}
     <div class="hero-section">
-        <h2 class="title">Dashboard</h2>
-        <button id="add-report"><i class="fas fa-file-medical-alt"></i> Add Report</button>
+        <p class="title">Dashboard</p>
+        <div class="actions">
+            <button id="add-report"><i class="fas fa-file-medical-alt"></i> Add Report</button>
+        </div>
     </div>
     <div class="job-list">
-        <p class="job-list-title"><i class="fas fa-clipboard-list"></i> {{#if filter}} {{filter}} {{else}} your {{/if}} jobs</p>
-        <label for="filter">Filter jobs</label>
-        <form action="" method="get">
-            <select name="filter" id="filter">
-                <option value="new">New</option>
-                <option value="assigned">Assigned</option>
-                <option value="completed">Completed</option>
-            </select>
-            <input type="submit" value="Apply">
-        </form>
-        {{#each userJobs}}
-            <div class="job-item">
-                <span class="job-status">
-                    Status:
-                    {{#if assigned}}
-                        {{#if status}}
-                            <i class="fas fa-check text-green"></i>
-                        {{else}}
-                            <i class="fas fa-times text-red"></i>
-                        {{/if}}
-                    {{else}}
-                        {{# if quoteId}}
-                            <i class="fas fa-spinner"></i>
-                        {{else}}
-                            <i class="fas fa-times text-red"></i>
-                        {{/if}}
-                    {{/if}}
-                </span>
-                <a href="/report/{{id}}">
-                    <span>{{desc}}</span>
-                    <small>
-                        <span class="secondary">{{appType}}</span> |
-                        <span class="secondary">{{appAge}} years</span> |
-                        <span class="secondary">{{appMan}}</span>
-                    </small>
-                </a>
+        <div class="job-list-header">
+            <p class="job-list-title"><i class="fas fa-clipboard-list"></i> {{#if filter}} {{filter}} {{else}} your {{/if}} jobs</p>
+            <div class="filter-box">
+                <form action="" method="get">
+                <label for="filter">Filter jobs: </label>
+                    <select name="filter" id="filter">
+                        <option value="new">All (new first)</option>
+                        <option value="assigned">Assigned</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <input type="submit" value="Apply">
+                </form>
             </div>
-        {{/each}}
+        </div>
+        <div class="jobs-container">
+            {{#if userJobs}}
+                {{#each userJobs}}
+                    <div class="job-item">
+                        <span class="job-status">
+                            <span class="hide-md">Status:</span>
+                            {{#if assigned}}
+                                {{#if status}}
+                                    <i class="fas fa-check text-green"></i>
+                                {{else}}
+                                    <i class="fas fa-times text-red"></i>
+                                {{/if}}
+                            {{else}}
+                                {{# if quoteId}}
+                                    <i class="fas fa-spinner"></i>
+                                {{else}}
+                                    <i class="fas fa-times text-red"></i>
+                                {{/if}}
+                            {{/if}}
+                        </span>
+                        <a class="job-link" href="/report/{{id}}">
+                            {{desc}}
+                        </a>
+                        <small>
+                            <span class="secondary">{{appType}}</span> |
+                            <span class="secondary">{{appAge}} years</span> |
+                            <span class="secondary">{{appMan}}</span>
+                        </small>
+                    </div>
+                {{/each}}
+            {{else}}
+                <p class="no-more">No jobs found! :(</p>
+            {{/if}}
+        </div>
     </div>
 </div>
 

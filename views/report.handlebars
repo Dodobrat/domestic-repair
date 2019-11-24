@@ -14,46 +14,64 @@
 <body>
 <nav class="navbar">
     <div class="container nav-container">
-        <a class="nav-title" href="/">Domestic Repair</a>
-        <ul>
-            <li>
-                <img src="../{{user.avatar}}" alt="">
-                Hi, {{user.user}}
-            </li>
-            <a href="/logout">
-                <li>
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </li>
-            </a>
-        </ul>
+        <a class="nav-title" href="/">
+            <span class="hide-lg">DR</span>
+            <span class="hide-md">Domestic Repair</span>
+        </a>
+        <div class="current-user">
+            <img src="../{{user.avatar}}" alt="">
+            <span class="hide-md">Hi, {{user.user}}</span> 
+        </div>
+        <a class="logout" href="/logout">
+            <span class="hide-md">Logout</span> <i class="fas fa-power-off"></i>
+        </a>
     </div>
 </nav>
 <div class="container">
-    <a href="/" class="go-back">
-        <button><i class="fas fa-arrow-left"></i> Go Back</button>
-    </a>
-    Status:
-    {{#if job.assigned}}
-        {{#if job.status}}
-            <i class="fas fa-check text-green"></i>
-        {{else}}
-            <i class="fas fa-times text-red"></i>
-        {{/if}}
-    {{else}}
-        {{# if job.quoteId}}
-            <i class="fas fa-spinner"></i>
-        {{else}}
-            <i class="fas fa-times text-red"></i>
-        {{/if}}
+    {{#if success}}
+        <div class="toast success">
+            <p>{{success}}</p>
+        </div>
     {{/if}}
+    {{#if error}}
+        <div class="toast error">
+            <p>{{error}}</p>
+        </div>
+    {{/if}}
+    <div class="hero-section">
+        <a href="/" class="go-back">
+            <button><i class="fas fa-arrow-left"></i> Go Back</button>
+        </a>
+        <div class="actions">
+            <span class="status-report">
+                Status:
+                {{#if job.assigned}}
+                    {{#if job.status}}
+                        <i class="fas fa-check text-green"></i>
+                    {{else}}
+                        <i class="fas fa-times text-red"></i>
+                    {{/if}}
+                {{else}}
+                    {{# if job.quoteId}}
+                        <i class="fas fa-spinner"></i>
+                    {{else}}
+                        <i class="fas fa-times text-red"></i>
+                    {{/if}}
+                {{/if}}
+            </span>
+        </div>
+    </div>
+
     <div class="job-details">
         <div class="keywords">
-            <span> Appliance: <span class="tag">{{job.appType}}</span></span>
             <span> Age: <span class="tag">{{job.appAge}} years</span></span>
+            <span> Appliance: <span class="tag">{{job.appType}}</span></span>
             <span> Manufacturer: <span class="tag">{{job.appMan}}</span></span>
         </div>
-        <p class="created">by <span class="secondary">{{user.user}}</span> | created: <span
-                class="secondary">{{job.createdAt}}</span></p>
+        <p class="created">
+            by <span class="secondary">{{user.user}}</span> | created: 
+            <span class="secondary">{{job.createdAt}}</span>
+        </p>
         <div class="job-desc">
             <p>{{job.desc}}</p>
         </div>
@@ -61,44 +79,46 @@
                                                                                            style="opacity: 0; pointer-events: none">{{job.lng}}</span>
         <div id="jobMap"></div>
     </div>
-    <br>
+
     {{#if job.quoteId}}
         {{#if quote}}
             <div class="job-details">
-                <h3 class="text-center">Quote</h3>
+                <p class="title"><i class="fas fa-file-invoice-dollar"></i> Quote</h3>
                 <div class="keywords">
                     <span> Price: <span class="tag">£ {{quote.price}}</span></span>
                     <span> Booked Date: <span class="tag">{{quote.executionDate}}</span></span>
                     <span> Booked Time-Slot: <span class="tag">{{quote.executionTime}}</span></span>
                 </div>
-            <p class="created">
-                A technician will come to the premises to execute the repair. His name is <span
-                    class="secondary">{{tech.user}}</span>.
-                <br>
-                Please do not let them in before they have identified themselves. <br>
-                <strong>We do not take responsibility if you get killed by someone other than our employee</strong>
-
-                <br><br>
-                {{#if job.assigned}}
-                    <p class="text-green">Thank you accepting our offer. The technician will execute the previously
-                        stated repair</p>
-                {{else}}
-                    <a href="/assign/{{quote.jobId}}/{{quote.id}}">Approve Offer</a>
-                    <a href="/terminate/{{quote.id}}">Decline Offer</a>
-                {{/if}}
+                <p class="job-desc">
+                    A technician will come to the premises to execute the repair. His name is <span class="secondary">{{tech.user}}</span>.
+                    <br>
+                    Please do not let them in before they have identified themselves. <br>
+                    <strong>We do not take responsibility if you get killed by someone other than our employee</strong>
                 </p>
+                <div class="quote-action">
+                    {{#if job.assigned}}
+                        <p class="text-green">Thank you accepting our offer. The technician will execute the previously
+                            stated repair</p>
+                    {{else}}
+                        <a href="/assign/{{quote.jobId}}/{{quote.id}}">
+                            <button class="accept">Approve Offer</button>
+                        </a>
+                        <a href="/terminate/{{quote.id}}">
+                            <button class="decline">Decline Offer</button>
+                        </a>
+                    {{/if}}
+                </div>
             </div>
         {{/if}}
     {{/if}}
-    <br>
+    
     {{#if logs}}
         <div class="job-details">
-            <h3 class="text-center">Log</h3>
+            <p class="title"><i class="fas fa-info-circle"></i> Logs</h3>
             {{#each logs}}
-                <p class="created">{{desc}}
-                    <br>
-                    <strong>{{createdAt}}</strong>
-                </p>
+                <div class="log">
+                    <span>{{desc}}</span><span class="time">{{createdAt}}</span>
+                </div>
             {{/each}}
         </div>
     {{/if}}
