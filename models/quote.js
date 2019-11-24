@@ -52,8 +52,6 @@ module.exports = class Quote {
 	async provideQuote(data) {
 		const result = await this.limitTechAssignedJobsCount(data.techId)
 		if (result) {
-			return result
-		}else {
 			try {
 				await this.checkQuoteData(data)
 				const {date, time, price} = data.formData
@@ -65,6 +63,8 @@ module.exports = class Quote {
 			} catch (err) {
 				throw err
 			}
+		}else {
+			return result
 		}
 	}
 

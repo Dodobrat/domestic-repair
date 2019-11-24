@@ -52,11 +52,13 @@
             <span> Age: <span class="tag">{{job.appAge}} years</span></span>
             <span> Manufacturer: <span class="tag">{{job.appMan}}</span></span>
         </div>
-        <p class="created">by <span class="secondary">{{user.user}}</span> | created: <span class="secondary">{{job.createdAt}}</span></p>
+        <p class="created">by <span class="secondary">{{user.user}}</span> | created: <span
+                class="secondary">{{job.createdAt}}</span></p>
         <div class="job-desc">
             <p>{{job.desc}}</p>
         </div>
-        <span id="jobLat" style="opacity: 0; pointer-events: none">{{job.lat}}</span><span id="jobLng" style="opacity: 0; pointer-events: none">{{job.lng}}</span>
+        <span id="jobLat" style="opacity: 0; pointer-events: none">{{job.lat}}</span><span id="jobLng"
+                                                                                           style="opacity: 0; pointer-events: none">{{job.lng}}</span>
         <div id="jobMap"></div>
     </div>
     <br>
@@ -69,42 +71,55 @@
                     <span> Booked Date: <span class="tag">{{quote.executionDate}}</span></span>
                     <span> Booked Time-Slot: <span class="tag">{{quote.executionTime}}</span></span>
                 </div>
-                <p class="created">
-                    A technician will come to the premises to execute the repair. His name is <span
-                        class="secondary">{{tech.user}}</span>.
-                    <br>
-                    Please do not let them in before they have identified themselves. <br>
-                    <strong>We do not take responsibility if you get killed by someone other than our employee</strong>
+            <p class="created">
+                A technician will come to the premises to execute the repair. His name is <span
+                    class="secondary">{{tech.user}}</span>.
+                <br>
+                Please do not let them in before they have identified themselves. <br>
+                <strong>We do not take responsibility if you get killed by someone other than our employee</strong>
 
-                    <br><br>
-                    {{#if job.assigned}}
-                        <p class="text-green">Thank you accepting our offer. The technician will execute the previously stated repair</p>
-                        {{else}}
-                        <a href="/assign/{{quote.jobId}}/{{quote.id}}">Approve Offer</a>
-                        <a href="/terminate/{{quote.id}}">Decline Offer</a>
-                    {{/if}}
+                <br><br>
+                {{#if job.assigned}}
+                    <p class="text-green">Thank you accepting our offer. The technician will execute the previously
+                        stated repair</p>
+                {{else}}
+                    <a href="/assign/{{quote.jobId}}/{{quote.id}}">Approve Offer</a>
+                    <a href="/terminate/{{quote.id}}">Decline Offer</a>
+                {{/if}}
                 </p>
             </div>
         {{/if}}
+    {{/if}}
+    <br>
+    {{#if logs}}
+        <div class="job-details">
+            <h3 class="text-center">Log</h3>
+            {{#each logs}}
+                <p class="created">{{desc}}
+                    <br>
+                    <strong>{{createdAt}}</strong>
+                </p>
+            {{/each}}
+        </div>
     {{/if}}
     <br>
 </div>
 
 <script>
     function initMap() {
-        let latInput = document.getElementById("jobLat").innerText
-        let lngInput = document.getElementById("jobLng").innerText
+        let latInput = document.getElementById('jobLat').innerText
+        let lngInput = document.getElementById('jobLng').innerText
         const mapOptions = {
             zoom: 14,
-            center: new google.maps.LatLng(latInput,lngInput)
+            center: new google.maps.LatLng(latInput, lngInput)
         }
-        const map = new google.maps.Map(document.getElementById('jobMap'), mapOptions);
+        const map = new google.maps.Map(document.getElementById('jobMap'), mapOptions)
         let marker = new google.maps.Marker({
             position: mapOptions.center,
             map: map,
-            draggable:false
-        });
-        map.setCenter(marker.position);
+            draggable: false
+        })
+        map.setCenter(marker.position)
     }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClh5B6yiEc3qd754g2pItmh_FcgXAUr3E&callback=initMap"

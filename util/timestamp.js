@@ -27,4 +27,10 @@ module.exports = class Timestamp {
 		const timeHMS = await this.formatTime(date)
 		return `${timeDMY} ${timeHMS}`
 	}
+
+	async generateFileStamp() {
+		const date = new Date()
+		const timeDMY = await this.formatDate(date)
+		return `${timeDMY}`
+	}
 }

@@ -41,6 +41,9 @@
         <h2 class="title">Dashboard</h2>
         <button id="add-appliance"><i class="fas fa-blender-phone"></i> Add Supported Appliance</button>
         <button id="add-manufacturer"><i class="far fa-copyright"></i> Add Supported Manufacturer</button>
+        <form action="/tech/schedule/{{tech.id}}" method="post">
+            <input type="submit" value="Download Schedule">
+        </form>
     </div>
     <div class="job-list">
         <p class="job-list-title"><i class="fas fa-clipboard-list"></i> available jobs</p>

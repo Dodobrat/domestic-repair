@@ -40,7 +40,16 @@
         <button id="add-report"><i class="fas fa-file-medical-alt"></i> Add Report</button>
     </div>
     <div class="job-list">
-        <p class="job-list-title"><i class="fas fa-clipboard-list"></i> your jobs</p>
+        <p class="job-list-title"><i class="fas fa-clipboard-list"></i> {{#if filter}} {{filter}} {{else}} your {{/if}} jobs</p>
+        <label for="filter">Filter jobs</label>
+        <form action="" method="get">
+            <select name="filter" id="filter">
+                <option value="new">New</option>
+                <option value="assigned">Assigned</option>
+                <option value="completed">Completed</option>
+            </select>
+            <input type="submit" value="Apply">
+        </form>
         {{#each userJobs}}
             <div class="job-item">
                 <span class="job-status">

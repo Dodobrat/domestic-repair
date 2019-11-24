@@ -106,6 +106,19 @@
             </p>
         </div>
     {{/if}}
+    <br>
+    {{#if logs}}
+        <div class="job-details">
+            <h3 class="text-center">Log</h3>
+            {{#each logs}}
+                <p class="created">{{desc}}
+                    <br>
+                    <strong>{{createdAt}}</strong>
+                </p>
+            {{/each}}
+        </div>
+    {{/if}}
+    <br>
 </div>
 
 <div class="modal-overlay" id="quote-modal">

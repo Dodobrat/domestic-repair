@@ -7,9 +7,11 @@
 /* MODULE IMPORTS */
 const Router = require('koa-router')
 const Timestamp = require('../util/timestamp')
+const Mailer = require('../Mail/mailer')
 
 /* IMPORT CUSTOM MODULES */
 const Job = require('../models/job')
+const Log = require('../models/log')
 const Quote = require('../models/quote')
 const User = require('../models/user')
 const Technician = require('../models/technician')
@@ -54,9 +56,11 @@ router.get('/report/:id', async ctx => {
 	const data = {}
 	if(ctx.session.authorised === true) data.user = ctx.session.user
 	const job = await new Job(dbName)
+	const log = await new Log(dbName)
 	const quote = await new Quote(dbName)
 	const tech = await new Technician(dbName)
 	const jobRes = await job.getById(ctx.params.id)
+	data.logs = await log.getLogsByJobId(ctx.params.id)
 	const quoteRes = await quote.getQuoteByJobId(ctx.params.id)
 	let techRes
 	if(quoteRes !== undefined )	techRes = await tech.getById(quoteRes.techId)
@@ -77,11 +81,13 @@ router.get('/tech/report/:id', async ctx => {
 	const data = {}
 	if(ctx.query.err) data.error = ctx.query.err
 	const job = await new Job(dbName)
+	const log = await new Log(dbName)
 	const jobResult = await job.getById(ctx.params.id)
 	const user = await new User(dbName)
 	const quote = await new Quote(dbName)
 	const quoteRes = await quote.getQuoteByJobId(ctx.params.id)
 	const users = await user.getById(jobResult.userId)
+	data.logs = await log.getLogsByJobId(ctx.params.id)
 	data.tech = ctx.session.tech
 	data.job = jobResult
 	data.quote = quoteRes
@@ -101,6 +107,14 @@ router.get('/assign/:id/:qid', async ctx => {
 	const techQuote = await new Quote(dbName)
 	await techJob.markAssigned(ctx.params.id)
 	await techQuote.approveQuote(ctx.params.qid)
+	const timestamp = await new Timestamp()
+	const newLog = {
+		desc: 'Job assigned',
+		createdAt: await timestamp.generateTimestamp(),
+		jobId: ctx.params.id
+	}
+	const log = await new Log(dbName)
+	await log.addLog(newLog)
 	await ctx.redirect('back')
 })
 
@@ -117,6 +131,14 @@ router.get('/terminate/:id', async ctx => {
 	const quoteRes = await quote.getQuoteById(ctx.params.id)
 	await job.setQuoteToNull(quoteRes.jobId)
 	await quote.deleteQuote(ctx.params.id)
+	const timestamp = await new Timestamp()
+	const newLog = {
+		desc: 'Job quote refused',
+		createdAt: await timestamp.generateTimestamp(),
+		jobId: ctx.params.id
+	}
+	const log = await new Log(dbName)
+	await log.addLog(newLog)
 	await ctx.redirect('back')
 })
 
@@ -129,7 +151,20 @@ router.get('/terminate/:id', async ctx => {
  */
 router.get('/tech/check/:id', async ctx => {
 	const techJob = await new Job(dbName)
+	const userModel = await new User(dbName)
 	await techJob.markCompleted(ctx.params.id)
+	const jobData = await techJob.getById(ctx.params.id)
+	const user = await userModel.getById(jobData.userId)
+	const timestamp = await new Timestamp()
+	const newLog = {
+		desc: 'Job marked complete',
+		createdAt: await timestamp.generateTimestamp(),
+		jobId: ctx.params.id
+	}
+	const log = await new Log(dbName)
+	await log.addLog(newLog)
+	const mailer = await new Mailer()
+	await mailer.finishMail(ctx.params.id, ctx.session.tech ,user)
 	await ctx.redirect('back')
 })
 

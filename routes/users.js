@@ -29,6 +29,20 @@ const dataPass = async() => {
 	return dataObj
 }
 
+const filterResults = async(filter,userId) => {
+	const job = await new Job(dbName)
+	switch(filter) {
+		case 'new':
+			return await job.getByUser(userId)
+		case 'assigned':
+			return await job.getByUserApproved(userId)
+		case 'completed':
+			return await job.getByUserCompleted(userId)
+		default:
+			return await job.getByUser(userId)
+	}
+}
+
 /**
  * The secure home page.
  *
@@ -42,9 +56,9 @@ router.get('/', async ctx => {
 		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=unauthorized')
 		if(ctx.query.msg) data.success = ctx.query.msg
 		data.user = ctx.session.user
-		const job = await new Job(dbName)
-		data.userJobs = await job.getByUser(data.user.id)
+		data.userJobs = await filterResults(ctx.query.filter, data.user.id)
 		data.extra = await dataPass()
+		if (ctx.query.filter) data.filter = ctx.query.filter
 		await ctx.render('index', data)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})

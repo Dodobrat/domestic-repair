@@ -11,6 +11,7 @@ const Timestamp = require('../util/timestamp')
 /* IMPORT CUSTOM MODULES */
 const Quote = require('../models/quote')
 const Job = require('../models/job')
+const Log = require('../models/log')
 const User = require('../models/user')
 const Mailer = require('../Mail/mailer')
 
@@ -29,6 +30,28 @@ const gatherMailData = async(jobId) => {
 	return mailData
 }
 
+const genLog = async(jobId) => {
+	const timestamp = await new Timestamp()
+	const newLog = {
+		desc: 'A quote has been provided',
+		createdAt: await timestamp.generateTimestamp(),
+		jobId: jobId
+	}
+	const log = await new Log(dbName)
+	await log.addLog(newLog)
+}
+
+const onQuoteSuccess = async(data) => {
+	const jobModel = await new Job(dbName)
+	const quoteModel = await new Quote(dbName)
+	const quoteRes = await quoteModel.getQuoteByJobId(data.jobId)
+	await jobModel.setPending(data.jobId, quoteRes.id)
+	await genLog(data.jobId)
+	const mailer = await new Mailer()
+	const {user, quote} = await gatherMailData(quoteRes.jobId)
+	await mailer.mail(user, data.techId , quote)
+}
+
 /**
  * Provide Quote for a Job and automatically send e-mail.
  *
@@ -39,22 +62,19 @@ const gatherMailData = async(jobId) => {
 router.post('/tech/quote/:id', async ctx => {
 	const data = {}
 	const timestamp = await new Timestamp()
-	data.jobId = ctx.params.id
+	data.jobId = parseInt(ctx.params.id)
 	data.techId = ctx.session.tech.id
 	data.formData = ctx.request.body
 	data.createdAt = await timestamp.generateTimestamp()
 	const quote = await new Quote(dbName)
 	const result = await quote.provideQuote(data)
-	if(!result.err) {
-		const jobModel = await new Job(dbName)
-		const quoteModel = await new Quote(dbName)
-		const quoteRes = await quoteModel.getQuoteByJobId(data.jobId)
-		await jobModel.setPending(data.jobId, quoteRes.id)
+	if(result === true) {
+		await onQuoteSuccess(data)
 		await ctx.redirect('back')
-		const mailer = await new Mailer()
-		const {user, quote} = await gatherMailData(quoteRes.jobId)
-		await mailer.mail(user, ctx.session.tech, quote)
-	} else await ctx.redirect(`/tech/report/${data.jobId}?err=${result.err}`)
+	} else {
+		await ctx.redirect(`/tech/report/${data.jobId}?err=${result.err}`)
+	}
+	ctx.redirect('back')
 })
 
 module.exports = router

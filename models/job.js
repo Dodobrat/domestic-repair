@@ -70,6 +70,30 @@ module.exports = class Job {
 		}
 	}
 
+	async getByUserApproved(userId) {
+		try {
+			if (userId.length === 0) throw new Error('no argument passed')
+			const sql = `SELECT * FROM jobs WHERE userId='${userId}' AND assigned IS NOT NULL ORDER BY id DESC;`
+			const result = await this.db.all(sql)
+			if(result.length === 0) return null
+			return result
+		} catch (err) {
+			throw err
+		}
+	}
+
+	async getByUserCompleted(userId) {
+		try {
+			if (userId.length === 0) throw new Error('no argument passed')
+			const sql = `SELECT * FROM jobs WHERE userId='${userId}' AND status = 1 ORDER BY id DESC;`
+			const result = await this.db.all(sql)
+			if(result.length === 0) return null
+			return result
+		} catch (err) {
+			throw err
+		}
+	}
+
 	async getTechPendingJobs(pendingQuotes) {
 		const pendingJobs = pendingQuotes.map(async(quote) => {
 			try {

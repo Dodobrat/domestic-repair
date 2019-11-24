@@ -17,4 +17,21 @@ module.exports = class Log {
 			return this
 		})()
 	}
+
+	async addLog(data) {
+		try {
+			const {desc, createdAt, jobId} = data
+			const sql = `INSERT INTO logs (desc, createdAt, jobId) 
+            VALUES ("${desc}","${createdAt}","${jobId}");`
+			await this.db.run(sql)
+			return true
+		} catch (err) {
+			throw err
+		}
+	}
+
+	async getLogsByJobId(jobId) {
+		const sql = `SELECT * FROM logs WHERE jobId="${jobId}" ORDER BY id DESC;`
+		return await this.db.all(sql)
+	}
 }
