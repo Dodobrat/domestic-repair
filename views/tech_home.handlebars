@@ -55,27 +55,27 @@
         <div class="jobs-container">
             {{#if jobs}}
                 {{#each jobs}}
-                <div class="job-item">
-                    <span class="job-status">
-                        <span class="hide-md">Status:</span>
-                        {{#if status}}
-                            <i class="fas fa-check text-green"></i>
-                        {{else}}
-                            <i class="fas fa-times text-red"></i>
-                        {{/if}}
-                    </span>
-                    <a class="job-link" href="/tech/report/{{id}}">
-                        {{desc}}
-                    </a>
-                    <small>
-                        <span class="secondary">{{appType}}</span> |
-                        <span class="secondary">{{appAge}} years</span> |
-                        <span class="secondary">{{appMan}}</span>
-                    </small>
-                </div>
-            {{/each}}
+                    <div class="job-item">
+                        <span class="job-status">
+                            <span class="hide-md">Status:</span>
+                            {{#if status}}
+                                <i class="fas fa-check text-green"></i>
+                            {{else}}
+                                <i class="fas fa-times text-red"></i>
+                            {{/if}}
+                        </span>
+                        <a class="job-link" href="/tech/report/{{id}}">
+                            {{desc}}
+                        </a>
+                        <small>
+                            <span class="secondary">{{appType}}</span> |
+                            <span class="secondary">{{appAge}} years</span> |
+                            <span class="secondary">{{appMan}}</span>
+                        </small>
+                    </div>
+                {{/each}}
             {{else}}
-            <p class="no-more">No jobs found! :(</p>
+                <p class="no-more">No jobs found! :(</p>
             {{/if}}
         </div>
     </div>
@@ -185,11 +185,11 @@
         </div>
         <div class="modal-body">
             <form action="/tech/manufacturer" method="post" class="modal-form">
-                <div class="modal-form-group">
+                <div class="modal-form-group col-12">
                     <label for="name">Manufacturer Name</label>
                     <input name="name" id="name" type="text" required>
                 </div>
-                <div class="modal-form-group">
+                <div class="modal-form-group col-12">
                     <input type="submit" value="Submit">
                 </div>
             </form>
@@ -206,11 +206,11 @@
         </div>
         <div class="modal-body">
             <form action="/tech/appliance" method="post" class="modal-form">
-                <div class="modal-form-group">
+                <div class="modal-form-group col-12">
                     <label for="type">Appliance Type</label>
                     <input name="type" id="type" type="text" required>
                 </div>
-                <div class="modal-form-group">
+                <div class="modal-form-group col-12">
                     <input type="submit" value="Submit">
                 </div>
             </form>

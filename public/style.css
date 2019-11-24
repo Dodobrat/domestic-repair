@@ -871,6 +871,7 @@ body {
 }
 
 .modal-overlay {
+  z-index: 9999;
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
   -webkit-transition-delay: 0.1s;
@@ -883,14 +884,215 @@ body {
   opacity: 0;
   pointer-events: none;
   background: rgba(0, 0, 0, 0.6);
+  padding: 0 0.5rem;
 }
 
 .modal-overlay .modal-window {
+  z-index: 10000;
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
   opacity: 0;
   -webkit-transform: translateY(-100px);
           transform: translateY(-100px);
+  max-width: 350px;
+  min-width: 0;
+  width: 100%;
+  margin: 5rem auto;
+  background: #fff;
+  -webkit-box-shadow: 0px 3px 10px -3px rgba(0, 0, 0, 0.15);
+          box-shadow: 0px 3px 10px -3px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 0;
+}
+
+.modal-overlay .modal-window.modal-report {
+  max-width: 950px;
+}
+
+.modal-overlay .modal-window .modal-header {
+  background: #3585A6;
+  padding: 1rem 1rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+
+.modal-overlay .modal-window .modal-header .modal-header-title {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  color: #fff;
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.modal-overlay .modal-window .modal-header .close {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 30px;
+          flex: 0 0 30px;
+  text-align: center;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.modal-overlay .modal-window .modal-header .close:active {
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  -webkit-transform: scale(0.95);
+          transform: scale(0.95);
+}
+
+.modal-overlay .modal-window .modal-header .close:focus {
+  outline: none;
+}
+
+.modal-overlay .modal-window .modal-body {
+  width: 100%;
+  padding: 1rem;
+  max-height: 85vh;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.modal-overlay .modal-window .modal-body .modal-form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  width: 100%;
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group.col-4 {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 33.33333%;
+          flex: 0 0 33.33333%;
+  padding-right: 1rem;
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group.col-4:nth-child(3) {
+  padding-right: 0;
+}
+
+@media (max-width: 992px) {
+  .modal-overlay .modal-window .modal-body .modal-form .modal-form-group.col-4 {
+    -webkit-box-flex: 0;
+        -ms-flex: 0 0 100%;
+            flex: 0 0 100%;
+    padding-right: 0;
+  }
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group.col-12 {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 100%;
+          flex: 0 0 100%;
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group label {
+  display: block;
+  width: 100%;
+  font-weight: 400;
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group input {
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  padding: 0.65rem 0;
+  text-indent: 1rem;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #0477A6;
+  margin: 0 0 1rem 0;
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group input:focus {
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  outline: none;
+  background: #f1f1f1;
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group input[type="submit"] {
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  border: none;
+  background: #3585A6;
+  color: #fff;
+  padding: 0.75rem 0;
+  cursor: pointer;
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group input[type="submit"]:focus {
+  outline: none;
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group input[type="submit"]:active {
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  -webkit-transform: scale(0.95);
+          transform: scale(0.95);
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group select {
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  padding: 0.65rem 0;
+  text-indent: 1rem;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #0477A6;
+  margin: 0 0 1rem 0;
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group select:focus {
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  outline: none;
+  background: #f1f1f1;
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group textarea {
+  resize: none;
+  height: 120px;
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  padding: 0.65rem 0;
+  text-indent: 1rem;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #0477A6;
+  margin: 0 0 1rem 0;
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group textarea:focus {
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  outline: none;
+  background: #f1f1f1;
+}
+
+.modal-overlay .modal-window .modal-body .modal-form .modal-form-group #map {
+  height: 350px;
+  width: 100%;
+  margin: 0 0 1rem 0;
 }
 
 .modal-overlay.show {

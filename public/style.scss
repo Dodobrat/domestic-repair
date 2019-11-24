@@ -609,6 +609,7 @@ body {
 }
 
 .modal-overlay{
+    z-index: 9999;
     transition: $fast;
     transition-delay: 0.1s;
     position: fixed;
@@ -619,10 +620,143 @@ body {
     opacity: 0;
     pointer-events: none;
     background: rgba(0,0,0,0.6);
+    padding: 0 0.5rem;
     .modal-window{
+        z-index: 10000;
         transition: $fast;
         opacity: 0;
         transform: translateY(-100px);
+        max-width: 350px;
+        min-width: 0;
+        width: 100%;
+        margin: 5rem auto;
+        background: $card-bg;
+        box-shadow: $small-shadow;
+        border-radius: $radius;
+        overflow: hidden;
+        padding: 0;
+        &.modal-report{
+            max-width: 950px;
+        }
+        .modal-header{
+            background: $light-accent;
+            padding: 1rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            .modal-header-title{
+                flex: 1;
+                color: $white;
+                margin: 0;
+                font-weight: 600;
+                font-size: 1.1rem;
+            }
+            .close{
+                flex: 0 0 30px;
+                text-align: center;
+                color: $white;
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 1.1rem;
+                @include buttonPress();
+                @include focusRemove();
+            }
+        }
+        .modal-body{
+            width: 100%;
+            padding: 1rem;
+            max-height: 85vh;
+            overflow: hidden;
+            overflow-y: auto;
+            .modal-form{
+                display: flex;
+                justify-content: flex-start;
+                align-items: flex-start;
+                flex-wrap: wrap;
+                width: 100%;
+                .modal-form-group{
+                    &.col-4{
+                        flex: 0 0 33.33333%;
+                        padding-right: 1rem;
+                        &:nth-child(3){
+                            padding-right: 0;
+                        }
+                        @media(max-width: 992px){
+                            flex: 0 0 100%;
+                            padding-right: 0;
+                        }
+                    }
+                    &.col-12{
+                        flex: 0 0 100%;
+                    }
+                    label{
+                        display: block;
+                        width: 100%;
+                        font-weight: 400;
+                    }
+                    input{
+                        transition: $fast;
+                        padding: 0.65rem 0;
+                        text-indent: 1rem;
+                        width: 100%;
+                        border: none;
+                        border-bottom: 1px solid $accent;
+                        margin: 0 0 1rem 0;
+                        &:focus{
+                            transition: $fast;
+                            outline: none;
+                            background: $bg;
+                        }
+                        &[type="submit"]{
+                            transition: $fast;
+                            border: none;
+                            background: $light-accent;
+                            color: $white;
+                            padding: 0.75rem 0;
+                            cursor: pointer;
+                            @include focusRemove();
+                            @include buttonPress();
+                        }
+                    }
+                    select{
+                        transition: $fast;
+                        padding: 0.65rem 0;
+                        text-indent: 1rem;
+                        width: 100%;
+                        border: none;
+                        border-bottom: 1px solid $accent;
+                        margin: 0 0 1rem 0;
+                        &:focus{
+                            transition: $fast;
+                            outline: none;
+                            background: $bg;
+                        }
+                    }
+                    textarea{
+                        resize: none;
+                        height: 120px;
+                        transition: $fast;
+                        padding: 0.65rem 0;
+                        text-indent: 1rem;
+                        width: 100%;
+                        border: none;
+                        border-bottom: 1px solid $accent;
+                        margin: 0 0 1rem 0;
+                        &:focus{
+                            transition: $fast;
+                            outline: none;
+                            background: $bg;
+                        }
+                    }
+                    #map{
+                        height: 350px;
+                        width: 100%;
+                        margin: 0 0 1rem 0;
+                    }
+                }
+            }
+        }
     }
     &.show{
         transition: $fast;

@@ -97,14 +97,14 @@
 </div>
 
 <div class="modal-overlay" id="report-modal">
-    <div class="modal-window">
+    <div class="modal-window modal-report">
         <div class="modal-header">
             <p class="modal-header-title">Report a problem</p>
             <button class="close"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
             <form action="/report" method="post" class="modal-form">
-                <div class="modal-form-group">
+                <div class="modal-form-group col-4">
                     <label for="type">Appliance type</label>
                     <select name="type" id="type" required>
                         <option value="" selected>-- Choose --</option>
@@ -113,7 +113,7 @@
                         {{/each}}
                     </select>
                 </div>
-                <div class="modal-form-group">
+                <div class="modal-form-group col-4">
                     <label for="age">Appliance age</label>
                     <select name="age" id="age" required>
                         <option value="" selected>-- Choose --</option>
@@ -129,7 +129,7 @@
                         <option value="10">10 years</option>
                     </select>
                 </div>
-                <div class="modal-form-group">
+                <div class="modal-form-group col-4">
                     <label for="manufacturer">Appliance Manufacturer</label>
                     <select name="manufacturer" id="manufacturer" required>
                         <option value="" selected>-- Choose --</option>
@@ -138,18 +138,18 @@
                         {{/each}}
                     </select>
                 </div>
-                <div class="modal-form-group">
+                <div class="modal-form-group col-12">
                     <label for="desc">Fault description</label>
                     <textarea name="desc" id="desc"></textarea>
                 </div>
-                <div class="modal-form-group">
+                <div class="modal-form-group col-12">
                     <label for="address">Drag the marker to your location</label>
                     <div id="map"></div>
                 </div>
                 <input type="hidden" name="user" value="{{user.id}}">
                 <input type="hidden" name="lat" id="lat" value="">
                 <input type="hidden" name="lng" id="lng" value="">
-                <div class="modal-form-group">
+                <div class="modal-form-group col-12">
                     <input type="submit" value="Submit">
                 </div>
             </form>

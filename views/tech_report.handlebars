@@ -139,15 +139,15 @@
         </div>
         <div class="modal-body">
             <form action="/tech/quote/{{job.id}}" method="post" class="modal-form">
-                <div class="modal-form-group">
+                <div class="modal-form-group col-12">
                     <label for="price">Job Cost £</label>
                     <input name="price" id="price" type="number" required>
                 </div>
-                <div class="modal-form-group">
+                <div class="modal-form-group col-12">
                     <label for="exec-date">Execution Date</label>
                     <input name="date" id="exec-date" type="date" required>
                 </div>
-                <div class="modal-form-group">
+                <div class="modal-form-group col-12">
                     <label for="exec-time">Execution Time</label>
                     <select name="time" id="exec-time" required>
                         <option value="" selected>-- Choose Time Block --</option>
@@ -157,7 +157,7 @@
                         <option value="15:00 - 17:00">15:00 - 17:00</option>
                     </select>
                 </div>
-                <div class="modal-form-group">
+                <div class="modal-form-group col-12">
                     <input type="submit" value="Submit">
                 </div>
             </form>
