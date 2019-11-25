@@ -39,11 +39,16 @@ module.exports = class Quote {
 
 	async limitTechAssignedJobsCount(techId) {
 		try {
-			const jobCount = 3
+			const jobCount = 2
+			let limitRes
 			const sql = `SELECT COUNT(id) as quotes FROM quotes WHERE techId = ${techId} AND approved = 0;`
 			const data = await this.db.get(sql)
-			if (data.quotes >= jobCount) return {err: 'You cannot have more than 3 pending jobs'}
-			else return true
+			if (data.quotes > jobCount) {
+				limitRes = { err: 'You can\'t have more than 3 pending jobs' }
+			}else {
+				limitRes = true
+			}
+			return limitRes
 		} catch (err) {
 			throw err
 		}
@@ -51,7 +56,7 @@ module.exports = class Quote {
 
 	async provideQuote(data) {
 		const result = await this.limitTechAssignedJobsCount(data.techId)
-		if (result) {
+		if (!result.err) {
 			try {
 				await this.checkQuoteData(data)
 				const {date, time, price} = data.formData

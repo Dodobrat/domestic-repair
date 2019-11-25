@@ -8,16 +8,10 @@ module.exports = class Job {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			const sql = `CREATE TABLE IF NOT EXISTS jobs (
-			id INTEGER PRIMARY KEY AUTOINCREMENT, 
-			appType TEXT, appAge INTEGER, appMan TEXT, desc TEXT, 
-			lat TEXT NULL, lng TEXT NULL, 
-			createdAt TEXT, 
-			status INTEGER DEFAULT 0 NOT NULL,
-			assigned INTEGER DEFAULT NULL,
-			userId INTEGER NOT NULL,
-			quoteId INTEGER NULL,
-			FOREIGN KEY(userId) REFERENCES users(id)
-			FOREIGN KEY(quoteId) REFERENCES quotes(id));`
+			id INTEGER PRIMARY KEY AUTOINCREMENT, appType TEXT, appAge INTEGER, appMan TEXT, desc TEXT, 
+			lat TEXT NULL, lng TEXT NULL, createdAt TEXT, status INTEGER DEFAULT 0 NOT NULL,
+			assigned INTEGER DEFAULT NULL, userId INTEGER NOT NULL, quoteId INTEGER NULL,
+			FOREIGN KEY(userId) REFERENCES users(id), FOREIGN KEY(quoteId) REFERENCES quotes(id));`
 			await this.db.run(sql)
 			return this
 		})()
@@ -73,7 +67,8 @@ module.exports = class Job {
 	async getByUserApproved(userId) {
 		try {
 			if (userId.length === 0) throw new Error('no argument passed')
-			const sql = `SELECT * FROM jobs WHERE userId='${userId}' AND assigned IS NOT NULL ORDER BY id DESC;`
+			const sql = `SELECT * FROM jobs WHERE userId='${userId}' AND assigned IS NOT NULL AND status = 0 
+			ORDER BY id DESC;`
 			const result = await this.db.all(sql)
 			if(result.length === 0) return null
 			return result
@@ -103,7 +98,6 @@ module.exports = class Job {
 				throw err
 			}
 		})
-
 		return Promise.all(pendingJobs).then((techPendingJobs) => techPendingJobs)
 	}
 
@@ -116,7 +110,6 @@ module.exports = class Job {
 				throw err
 			}
 		})
-
 		return Promise.all(assignedJobs).then((techAssignedJobs) => techAssignedJobs)
 	}
 

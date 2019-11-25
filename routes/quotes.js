@@ -68,13 +68,12 @@ router.post('/tech/quote/:id', async ctx => {
 	data.createdAt = await timestamp.generateTimestamp()
 	const quote = await new Quote(dbName)
 	const result = await quote.provideQuote(data)
-	if(result === true) {
+	if(!result.err) {
 		await onQuoteSuccess(data)
 		await ctx.redirect('back')
 	} else {
 		await ctx.redirect(`/tech/report/${data.jobId}?err=${result.err}`)
 	}
-	ctx.redirect('back')
 })
 
 module.exports = router

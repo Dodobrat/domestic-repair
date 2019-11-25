@@ -20,7 +20,7 @@
         </a>
         <div class="current-user">
             <span class="badge">Technician</span>
-            <span class="hide-md">Hi, {{tech.user}}</span> 
+            <span class="hide-md">Hi, {{tech.user}}</span>
         </div>
         <a class="logout" href="/tech/logout">
             <span class="hide-md">Logout</span> <i class="fas fa-power-off"></i>
@@ -43,9 +43,9 @@
         <div class="actions">
             <button id="add-appliance"><i class="fas fa-blender-phone"></i> Add Appliance</button>
             <button id="add-manufacturer"><i class="far fa-copyright"></i> Add Manufacturer</button>
-            <form action="/tech/schedule/{{tech.id}}" method="post">
-                <input type="submit" value="Download Schedule">
-            </form>
+            <a href="/tech/schedule/{{tech.id}}" target="_blank">
+                <button class="bg-red"><i class="fas fa-file-pdf"></i> Download Schedule</button>
+            </a>
         </div>
     </div>
     <div class="job-list">
@@ -155,7 +155,6 @@
                 {{/if}}
             </div>
         </div>
-        <br>
         <div class="wrap-list">
             <div class="wrap-list-header">
                 <p class="wrap-list-title"><i class="far fa-copyright"></i> All Supported Manufacturers</p>

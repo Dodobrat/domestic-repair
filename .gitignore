@@ -5,7 +5,12 @@ coverage/
 *.db
 screenshots/*
 docs/
+
+#removing editor configs and generated files
 package-lock.json
 .vscode
 .idea
+
+#removing files that are aded from users
 public/avatars/*
+public/pdfs/*

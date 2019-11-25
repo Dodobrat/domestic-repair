@@ -90,4 +90,14 @@ if(document.body.contains(manModalTrigger)) {
 window.addEventListener('click', manOutsideClick)
 window.addEventListener('click', appOutsideClick)
 
+const toast = document.querySelector('.toast')
+const removeAfter = 3000
+if (document.body.contains(toast)) {
+	window.onload = () => {
+		setTimeout(() => {
+			toast.classList.add('hide')
+		},removeAfter)
+	}
+}
+
 

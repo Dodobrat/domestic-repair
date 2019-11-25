@@ -5,88 +5,109 @@
 'use strict'
 
 // Define font files
-// const fonts = {
-// 	Roboto: {
-// 		normal: 'public/fonts/Roboto-Regular.ttf',
-// 		bold: 'public/fonts/Roboto-Medium.ttf',
-// 		italics: 'public/fonts/Roboto-Italic.ttf',
-// 		bolditalics: 'public/fonts/Roboto-MediumItalic.ttf'
-// 	}
-// }
+const fonts = {
+	Roboto: {
+		normal: 'public/fonts/Roboto-Regular.ttf',
+		bold: 'public/fonts/Roboto-Medium.ttf',
+		italics: 'public/fonts/Roboto-Italic.ttf',
+		bolditalics: 'public/fonts/Roboto-MediumItalic.ttf'
+	}
+}
 
 /* MODULE IMPORTS */
 const Router = require('koa-router')
-// const PdfPrinter = require('pdfmake')
-// const printer = new PdfPrinter(fonts)
-// const fs = require('fs-extra')
-// const Timestamp = require('./timestamp')
+const PdfPrinter = require('pdfmake')
+const printer = new PdfPrinter(fonts)
+const fs = require('fs-extra')
 
 /* IMPORT CUSTOM MODULES */
-// const Quote = require('../models/quote')
-// const Job = require('../models/job')
-// const User = require('../models/user')
-// const Technician = require('../models/technician')
+const Quote = require('../models/quote')
+const Job = require('../models/job')
+const Technician = require('../models/technician')
 
 const router = new Router
 
-// const dbName = 'website.db'
+const dbName = 'website.db'
 
-// const createPDF = async(data) => {
-// 	const content = {
-// 		content: [
-// 			'Assigned Unfinished Jobs Schedule'
-// 		]
-// 	}
-// 	return content
-// }
 
-const docDefinition = {
-	content: [
-		{text: 'Assigned Unfinished Jobs Schedule', style: 'header'},
-
-		{text: 'Job 1', style: 'subheader'},
-		{
-			style: 'tableExample',
-			table: {
-				widths: [70, 75, 40, 85, 60, '*'],
-				body: [
-					[
-						{text: 'due Date', style: 'tableHeader'},
-						{text: 'Time', style: 'tableHeader'},
-						{text: 'Price', style: 'tableHeader'},
-						{text: 'Appliance', style: 'tableHeader'},
-						{text: 'Age', style: 'tableHeader'},
-						{text: 'Manufacturer', style: 'tableHeader'}
-					],
-					['01.01.2019', '10:00 - 12:00', '250', 'Refrigerator', '10 years', 'Bosch']
+const fillInJobData = async(job) => [
+	{text: `Job ${job.id}`, style: 'subheader'},
+	{style: 'tableExample',
+		table: {
+			widths: [70, 75, '*', 85, 60, '*'],
+			body: [
+				[
+					{text: 'due Date', style: 'tableHeader'},
+					{text: 'Time', style: 'tableHeader'},
+					{text: 'Price', style: 'tableHeader'},
+					{text: 'Appliance', style: 'tableHeader'},
+					{text: 'Age', style: 'tableHeader'},
+					{text: 'Manufacturer', style: 'tableHeader'}
+				],
+				[
+					`${job.quote.executionDate}`,
+					`${job.quote.executionTime}`,
+					`${job.quote.price}`,
+					`${job.appType}`,
+					`${job.appAge}`,
+					`${job.appMan}`
 				]
-			},
+			]
 		},
-		{text: 'Job 1 Description', style: 'subheader'},
-		`Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-		Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-		when an unknown printer took a galley of type and scrambled it to make a type specimen book.`,
-		{text: 'Address: ', style: 'subheader'},
-		{text: 'Open Google Maps', link: 'http://google.com', color: 'blue'}
-	],
-	styles: {
-		header: {
-			fontSize: 18,
-			bold: true,
-			margin: [0, 0, 0, 10]
-		},
-		subheader: {
-			fontSize: 15,
-			bold: true,
-			margin: [0, 10, 0, 5]
-		},
-		tableHeader: {
-			bold: true,
-			fontSize: 13,
-			color: 'black'
+	},
+	{text: `Job ${job.id} Description`, style: 'subheader'},
+	`${job.desc}`,
+	{text: 'Address: ', style: 'subheader'},
+	{
+		text: 'Open Google Maps',
+		link: `https://www.google.com/maps/@${job.lat},${job.lng},20z?hl=en-US`,
+		color: 'blue'
+	},
+	`----------------------------------------------------------------------------------`
+]
+
+const jobInfo = async(data) => {
+	if (data.jobs !== undefined) {
+		const readyToDisplayJobs = []
+		const quote = await new Quote(dbName)
+		for (const job of data.jobs) {
+			if (job.status !== 1) {
+				job.quote = await quote.getQuoteByJobId(job.id)
+				readyToDisplayJobs.push(await fillInJobData(job))
+			}
 		}
+		return readyToDisplayJobs
 	}
 }
+
+const generatePDF = async(data) => {
+	const jobs = await jobInfo(data)
+	const file = {
+		content: [
+			{text: 'Assigned Unfinished Jobs Schedule', style: 'header'},
+			[jobs]
+		],
+		styles: {
+			header: {
+				fontSize: 18,
+				bold: true,
+				margin: [0, 0, 0, 10]
+			},
+			subheader: {
+				fontSize: 15,
+				bold: true,
+				margin: [0, 10, 0, 5]
+			},
+			tableHeader: {
+				bold: true,
+				fontSize: 13,
+				color: 'black'
+			}
+		}
+	}
+	return file
+}
+
 
 /**
  * Provide PDF for a technician to download.
@@ -95,20 +116,26 @@ const docDefinition = {
  * @route {POST} /tech/schedule
  * @authentication This route requires cookie-based authentication.
  */
-router.post('/tech/schedule/:id', async ctx => {
-	// const data = {}
-	// const tech = await new Technician(dbName)
-	// const time = await new Timestamp()
-	// const quote = await new Quote(dbName)
-	// const job = await new Job(dbName)
-	// data.technician = await tech.getById(ctx.params.id)
-	// data.quotes = await quote.getAllApprovedQuotesByTechId(ctx.params.id)
-	// data.jobs = await job.getTechAssignedJobs(data.quotes)
-
-	// const pdfDoc = printer.createPdfKitDocument(docDefinition)
-	// pdfDoc.pipe(fs.createWriteStream(`${await time.generateFileStamp()}.pdf`))
-	// pdfDoc.end()
-	ctx.redirect('back')
+router.get('/tech/schedule/:id', async ctx => {
+	const data = {}
+	const tech = await new Technician(dbName)
+	const job = await new Job(dbName)
+	const quote = await new Quote(dbName)
+	const quoteRes = await quote.getAllApprovedQuotesByTechId(ctx.params.id)
+	data.technician = await tech.getById(ctx.params.id)
+	data.jobs = await job.getTechAssignedJobs(quoteRes)
+	const pdfDoc = printer.createPdfKitDocument(await generatePDF(data))
+	const path = `public/pdfs/tech_${ctx.params.id}.pdf`
+	pdfDoc.pipe(fs.createWriteStream(path))
+	pdfDoc.end()
+	ctx.body = fs.createReadStream(path)
+	ctx.set('Content-type', 'application/pdf')
+	ctx.attachment(`tech_${ ctx.params.id }.pdf`)
+	fs.unlink(path, (err) => {
+		if (err) throw err
+		// if no error, file has been deleted successfully
+		console.log('File deleted!')
+	})
 })
 
 
