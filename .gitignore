@@ -13,4 +13,3 @@ package-lock.json
 
 #removing files that are aded from users
 public/avatars/*
-public/pdfs/*
