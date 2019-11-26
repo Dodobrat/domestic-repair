@@ -4,6 +4,12 @@
 
 const nodemailer = require('nodemailer')
 
+// MAILTRAP INFO
+const mailUser = 'd0c80fa6e29572'
+const mailPass = '49aef1f003a410'
+const mailHost = 'smtp.mailtrap.io'
+const mailPort = 2525
+
 module.exports = class Mailer {
 	async message(user, tech, quote) {
 		return `<h3>Hi ${user.user}</h3>
@@ -35,11 +41,11 @@ module.exports = class Mailer {
 
 	async mail(user, tech, quote) {
 		const transporter = nodemailer.createTransport({
-			host: 'smtp.mailtrap.io',
-			port: 2525,
+			host: mailHost,
+			port: mailPort,
 			auth: {
-				user: 'd0c80fa6e29572',
-				pass: '49aef1f003a410'
+				user: mailUser,
+				pass: mailPass
 			}
 		})
 		const mailOptions = {
