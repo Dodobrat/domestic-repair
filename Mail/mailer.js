@@ -62,11 +62,11 @@ module.exports = class Mailer {
 
 	async finishMail(jobId, tech,user) {
 		const transporter = nodemailer.createTransport({
-			host: 'smtp.mailtrap.io',
-			port: 2525,
+			host: mailHost,
+			port: mailPort,
 			auth: {
-				user: 'd0c80fa6e29572',
-				pass: '49aef1f003a410'
+				user: mailUser,
+				pass: mailPass
 			}
 		})
 		const mailOptions = {
