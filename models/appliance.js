@@ -34,7 +34,9 @@ module.exports = class Appliance {
 	}
 
 	async remove(id) {
+		if (id.length === 0) throw new Error('missing id')
 		const sql = `DELETE FROM appliances WHERE id = ${id};`
 		await this.db.run(sql)
+		return true
 	}
 }

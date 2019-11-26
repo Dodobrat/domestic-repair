@@ -7,7 +7,9 @@
     "jest": true
   },
   "parserOptions": {
-    "ecmaVersion": 8
+    "ecmaVersion": 2018,
+    "noInlineConfig": true,
+    "reportUnusedDisableDirectives": true
   },
   "rules": {
     "arrow-body-style": "error",

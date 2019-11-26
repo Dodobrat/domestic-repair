@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt-promise')
 const fs = require('fs-extra')
 const mime = require('mime-types')
 const sqlite = require('sqlite-async')
-const uuid = require('uuid/v4')
 const saltRounds = 10
 
 module.exports = class User {
@@ -24,10 +23,10 @@ module.exports = class User {
 	}
 
 	async regCheck(user, email, pass, avatar) {
-		if (user.length === 0) throw new Error('missing username')
-		if (email.length === 0) throw new Error('missing email')
-		if (pass.length === 0) throw new Error('missing password')
-		if (avatar.length === 0) throw new Error('missing avatar')
+		if (!user) throw new Error('missing username')
+		if (!email) throw new Error('missing email')
+		if (!pass) throw new Error('missing password')
+		if (!avatar) throw new Error('missing avatar')
 		return true
 	}
 
@@ -51,13 +50,13 @@ module.exports = class User {
 		}
 	}
 
-	async uploadPicture(path, mimeType) {
+	async uploadPicture(path, mimeType, user) {
+		if (!mimeType) throw new Error('missing file extension')
 		const extension = mime.extension(mimeType)
-		if (extension.length === 0) throw new Error('missing file extension')
-		if (path.length === 0) throw new Error('missing file name')
-		const imgName = uuid()
+		if (!path) throw new Error('missing file name')
+		const imgName = 'avatar'
 		await fs.copy(path, `public/avatars/${imgName}.${extension}`)
-		return `./avatars/${imgName}.${extension}`
+		return `./avatars/${imgName}_${user}.${extension}`
 	}
 
 	async login(user, pass) {

@@ -53,7 +53,7 @@ const filterResults = async(filter,userId) => {
 router.get('/', async ctx => {
 	try {
 		const data = {}
-		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=unauthorized')
+		if(ctx.session.authorised !== true) return ctx.redirect('/login')
 		if(ctx.query.msg) data.success = ctx.query.msg
 		data.user = ctx.session.user
 		data.userJobs = await filterResults(ctx.query.filter, data.user.id)
@@ -84,7 +84,7 @@ router.post('/register', koaBody, async ctx => {
 		const {user, email, pass} = ctx.request.body
 		const {path, type} = ctx.request.files.avatar
 		const userModel = await new User(dbName)
-		const avatar = await userModel.uploadPicture(path, type)
+		const avatar = await userModel.uploadPicture(path, type, user)
 		ctx.session = await userModel.register(user, email, pass, avatar)
 		ctx.redirect('/?msg=user added')
 	} catch(err) {

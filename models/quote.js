@@ -22,36 +22,29 @@ module.exports = class Quote {
 	}
 
 	async checkQuoteIds(data) {
-		const {techId, jobId, createdAt} = data
-		if (jobId.length === 0) throw new Error('missing job id')
-		if (techId.length === 0) throw new Error('missing tech id')
-		if (createdAt.length === 0) throw new Error('missing timestamp')
+		if (!data.jobId) throw new Error('missing jobId')
+		if (!data.createdAt) throw new Error('missing timestamp')
 	}
 
 	async checkQuoteData(data) {
 		await this.checkQuoteIds(data)
-		const {date, time, price} = data.formData
-		if (price.length === 0) throw new Error('missing job price')
-		if (date.length === 0) throw new Error('missing job execution date')
-		if (time.length === 0) throw new Error('missing job execution time block')
+		if (!data.formData.price) throw new Error('missing job price')
+		if (!data.formData.date) throw new Error('missing job execution date')
+		if (!data.formData.time) throw new Error('missing job execution time block')
 	}
 
 
 	async limitTechAssignedJobsCount(techId) {
-		try {
-			const jobCount = 2
-			let limitRes
-			const sql = `SELECT COUNT(id) as quotes FROM quotes WHERE techId = ${techId} AND approved = 0;`
-			const data = await this.db.get(sql)
-			if (data.quotes > jobCount) {
-				limitRes = { err: 'You can\'t have more than 3 pending jobs' }
-			}else {
-				limitRes = true
-			}
-			return limitRes
-		} catch (err) {
-			throw err
+		const jobCount = 2
+		let limitRes
+		const sql = `SELECT COUNT(id) as quotes FROM quotes WHERE techId = ${techId} AND approved = 0;`
+		const data = await this.db.get(sql)
+		if (data.quotes > jobCount) {
+			limitRes = { err: 'You can\'t have more than 3 pending jobs' }
+		}else {
+			limitRes = true
 		}
+		return limitRes
 	}
 
 	async provideQuote(data) {
@@ -74,33 +67,41 @@ module.exports = class Quote {
 	}
 
 	async getQuoteById(quoteId) {
+		if (!quoteId) throw new Error('missing parameter')
 		const sql = `SELECT * FROM quotes WHERE id="${quoteId}";`
 		return await this.db.get(sql)
 	}
 
 	async getQuoteByJobId(jobId) {
+		if (!jobId) throw new Error('missing parameter')
 		const sql = `SELECT * FROM quotes WHERE jobId="${jobId}";`
 		return await this.db.get(sql)
 	}
 
 	async deleteQuote(quoteId) {
+		if (!quoteId) throw new Error('missing parameter')
 		const sql = `DELETE FROM quotes WHERE id = ${quoteId};`
 		await this.db.run(sql)
+		return true
 	}
 
 	async getAllPendingQuotesByTechId(techId) {
+		if (!techId) throw new Error('missing parameter')
 		const sql = `SELECT * FROM quotes WHERE techId="${techId}" AND approved = 0 ORDER BY id DESC;`
 		return await this.db.all(sql)
 	}
 
 	async getAllApprovedQuotesByTechId(techId) {
+		if (!techId) throw new Error('missing parameter')
 		const sql = `SELECT * FROM quotes WHERE techId="${techId}" AND approved = 1 ORDER BY id DESC;`
 		return await this.db.all(sql)
 	}
 
 	async approveQuote(quoteId) {
+		if (!quoteId) throw new Error('missing parameter')
 		const sql = `UPDATE quotes SET approved = 1 WHERE id='${quoteId}';`
 		await this.db.run(sql)
+		return true
 	}
 
 	//TODO: Uncomment the next function for resetting the database and deleting quotes and jobs tables

@@ -29,12 +29,18 @@ const router = new Router
 
 const dbName = 'website.db'
 
+const seventy = 70
+const seventyFive = 70
+const eightyFive = 70
+const sixty = 70
+const ten = 10
+const five = 5
 
 const fillInJobData = async(job) => [
 	{text: `Job ${job.id}`, style: 'subheader'},
 	{style: 'tableExample',
 		table: {
-			widths: [70, 75, '*', 85, 60, '*'],
+			widths: [seventy, seventyFive, '*', eightyFive, sixty, '*'],
 			body: [
 				[
 					{text: 'due Date', style: 'tableHeader'},
@@ -63,7 +69,7 @@ const fillInJobData = async(job) => [
 		link: `https://www.google.com/maps/@${job.lat},${job.lng},20z?hl=en-US`,
 		color: 'blue'
 	},
-	`----------------------------------------------------------------------------------`
+	'----------------------------------------------------------------------------------'
 ]
 
 const jobInfo = async(data) => {
@@ -91,12 +97,12 @@ const generatePDF = async(data) => {
 			header: {
 				fontSize: 18,
 				bold: true,
-				margin: [0, 0, 0, 10]
+				margin: [0, 0, 0, ten]
 			},
 			subheader: {
 				fontSize: 15,
 				bold: true,
-				margin: [0, 10, 0, 5]
+				margin: [0, ten, 0, five]
 			},
 			tableHeader: {
 				bold: true,

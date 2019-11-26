@@ -36,3 +36,23 @@ describe('getAll()', () => {
 		done()
 	})
 })
+
+describe('remove()', () => {
+	test('remove manufacturer with valid id', async done => {
+		expect.anything()
+		const man = await new Manufacturer()
+		await man.add('Bosch')
+		const valid = await man.remove(1)
+		expect(valid).toBe(true)
+		done()
+	})
+
+	test('remove manufacturer with invalid id', async done => {
+		expect.anything()
+		const man = await new Manufacturer()
+		await man.add('Bosch')
+		await expect( man.remove('') )
+			.rejects.toEqual( Error('missing id') )
+		done()
+	})
+})

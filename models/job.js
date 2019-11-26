@@ -90,25 +90,18 @@ module.exports = class Job {
 	}
 
 	async getTechPendingJobs(pendingQuotes) {
+		if (!pendingQuotes) throw new Error('no argument passed')
 		const pendingJobs = pendingQuotes.map(async(quote) => {
-			try {
-				const sql = `SELECT * FROM jobs WHERE assigned IS NULL AND quoteId = '${quote.id}' ORDER BY id DESC;`
-				return await this.db.get(sql)
-			} catch (err) {
-				throw err
-			}
+			const sql = `SELECT * FROM jobs WHERE assigned IS NULL AND quoteId = '${quote.id}' ORDER BY id DESC;`
+			return await this.db.get(sql)
 		})
 		return Promise.all(pendingJobs).then((techPendingJobs) => techPendingJobs)
 	}
 
 	async getTechAssignedJobs(assignedQuotes) {
 		const assignedJobs = assignedQuotes.map(async(quote) => {
-			try {
-				const sql = `SELECT * FROM jobs WHERE assigned = 1 AND quoteId = '${quote.id}' ORDER BY id DESC;`
-				return await this.db.get(sql)
-			} catch (err) {
-				throw err
-			}
+			const sql = `SELECT * FROM jobs WHERE assigned = 1 AND quoteId = '${quote.id}' ORDER BY id DESC;`
+			return await this.db.get(sql)
 		})
 		return Promise.all(assignedJobs).then((techAssignedJobs) => techAssignedJobs)
 	}
@@ -126,21 +119,18 @@ module.exports = class Job {
 	}
 
 	async setQuoteToNull(jobId) {
-		try {
-			const sql = `UPDATE jobs SET quoteId = NULL WHERE id='${jobId}';`
-			await this.db.run(sql)
-		} catch (err) {
-			throw err
-		}
+		if (!jobId) throw new Error('no argument passed')
+		const sql = `UPDATE jobs SET quoteId = NULL WHERE id='${jobId}';`
+		await this.db.run(sql)
+		return true
 	}
 
 	async setPending(jobId, quoteId) {
-		try {
-			const sql = `UPDATE jobs SET quoteId = ${quoteId} WHERE id='${jobId}';`
-			await this.db.run(sql)
-		} catch (err) {
-			throw err
-		}
+		if (!jobId) throw new Error('no jobId passed')
+		if (!quoteId) throw new Error('no quoteId passed')
+		const sql = `UPDATE jobs SET quoteId = ${quoteId} WHERE id='${jobId}';`
+		await this.db.run(sql)
+		return true
 	}
 
 	async markAssigned(id) {

@@ -20,9 +20,9 @@ module.exports = class Technician {
 	}
 
 	async validateTechRegData(user, email, pass) {
-		if (user.length === 0) throw new Error('missing username')
-		if (email.length === 0) throw new Error('missing email')
-		if (pass.length === 0) throw new Error('missing password')
+		if (!user) throw new Error('missing username')
+		if (!email) throw new Error('missing email')
+		if (!pass) throw new Error('missing password')
 		return true
 	}
 
@@ -68,14 +68,10 @@ module.exports = class Technician {
 
 
 	async getById(id) {
-		try {
-			let sql = `SELECT count(id) AS count FROM technicians WHERE id="${id}";`
-			const exists = await this.db.get(sql)
-			if (!exists.count) return null
-			sql = `SELECT id,user,email FROM technicians WHERE id="${id}";`
-			return await this.db.get(sql)
-		} catch (err) {
-			throw err
-		}
+		let sql = `SELECT count(id) AS count FROM technicians WHERE id="${id}";`
+		const exists = await this.db.get(sql)
+		if (!exists.count) return null
+		sql = `SELECT id,user,email FROM technicians WHERE id="${id}";`
+		return await this.db.get(sql)
 	}
 }

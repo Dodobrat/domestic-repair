@@ -34,7 +34,9 @@ module.exports = class Manufacturer {
 	}
 
 	async remove(id) {
+		if (id.length === 0) throw new Error('missing id')
 		const sql = `DELETE FROM manufacturers WHERE id = ${id};`
 		await this.db.run(sql)
+		return true
 	}
 }
