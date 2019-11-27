@@ -80,7 +80,7 @@ describe('uploadPicture()', () => {
 		const account = await new Accounts()
 		await account.register('deyan','deyan@gmail.com','password','avatar.png')
 		const avatarUpload = await account.uploadPicture('C:/laragon/www/bozhilo2/public/assets', 'image/png', 'deyan')
-		await expect( avatarUpload ).toEqual( `./avatars/avatar_deyan.png`)
+		await expect( avatarUpload ).toEqual( './avatars/avatar_deyan.png')
 		done()
 	})
 

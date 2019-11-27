@@ -155,7 +155,6 @@ describe('provideQuote()', () => {
 })
 
 
-
 describe('getQuoteById()', () => {
 	test('get quote by ID', async done => {
 		expect.anything()

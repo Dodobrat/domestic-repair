@@ -629,8 +629,6 @@ describe('getById()', () => {
 })
 
 
-
-
 describe('setQuoteToNull()', () => {
 	test('user refused quote with valid id', async done => {
 		expect.anything()
