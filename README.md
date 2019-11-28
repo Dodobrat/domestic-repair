@@ -1,9 +1,11 @@
 ## HOW TO RUN
 
 1. `npm i` to install all dependencies
-2. `npm test` to see test coverage
-3. `npm run linter` to see code quality (eslint results)
-4. `nodemon index` to run the server
+2. `npm run acceptance` to run acceptance tests
+3. `npm test` to see test coverage
+4. `npm run linter` to see code quality (eslint results)
+5. `npm run jsdoc` to generate documentation about all available methods
+6. `nodemon index` to run the server
 
 You can view and play around with the website after you have ran nodemon command at : __http://localhost:5000__
 
