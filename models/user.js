@@ -55,7 +55,7 @@ module.exports = class User {
 		const extension = mime.extension(mimeType)
 		if (!path) throw new Error('missing file name')
 		const imgName = 'avatar'
-		await fs.copy(path, `public/avatars/${imgName}.${extension}`)
+		await fs.copy(path, `public/avatars/${imgName}_${user}.${extension}`)
 		return `./avatars/${imgName}_${user}.${extension}`
 	}
 
