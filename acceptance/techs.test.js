@@ -4,6 +4,7 @@
 const puppeteer = require('puppeteer')
 const { configureToMatchImageSnapshot } = require('jest-image-snapshot')
 const PuppeteerHar = require('puppeteer-har')
+const shell = require('shelljs')
 
 const width = 1280
 const height = 720
@@ -25,9 +26,17 @@ beforeAll( async() => {
 	page = await browser.newPage()
 	har = new PuppeteerHar(page)
 	await page.setViewport({ width, height })
+	await shell.exec('beforeAll.sh')
 })
 
-//afterAll( () => browser.close() ) // https://github.com/GoogleChrome/puppeteer/issues/561
+afterAll( async() => {
+	browser.close()
+	await shell.exec('afterAll.sh')
+})
+
+beforeEach(async() => {
+	await shell.exec('beforeEach.sh')
+})
 
 describe('register', () => {
 	test('register technician', async done => {
@@ -68,7 +77,47 @@ describe('register', () => {
 		await page.tracing.stop()
 		await har.stop()
 		done()
-	}, 16000)
+	}, 10000)
+
+	test('register duplicate technician', async done => {
+		// start generating a trace file
+		await page.tracing.start({path: 'trace/register_dup_technician_har.json',screenshots: true})
+		await har.start({ path: 'trace/register_dup_technician_trace.har' })
+		// ARRANGE
+		await page.goto('http://localhost:5000', { timeout: 30000, waitUntil: 'load' })
+		await page.goto('http://localhost:5000/tech/register', { timeout: 30000, waitUntil: 'load' })
+		// take a screenshot and save to the file system
+		await page.screenshot({ path: 'screenshots/register_dup.png' })
+
+		// ACT
+		// complete the form and click submit
+		await page.type('input[name=user]', 'dodo')
+		await page.type('input[name=email]', 'dodo@gmail.com')
+		await page.type('input[name=pass]', '123456')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('p.error')
+		// await page.waitFor(1000) // sometimes you need a second delay
+
+		// ASSERT
+		const title = await page.title()
+		expect(title).toBe('Register')
+
+		// extracting the text inside the first H1 element on the page
+		const heading = await page.evaluate( () => {
+			const dom = document.querySelector('p.error')
+			return dom.innerText
+		})
+		expect(heading).toBe('username "dodo" already in use')
+
+		// grab a screenshot
+		const image = await page.screenshot()
+		// compare to the screenshot from the previous test run
+		expect(image).toMatchImageSnapshot()
+		// stop logging to the trace files
+		await page.tracing.stop()
+		await har.stop()
+		done()
+	}, 10000)
 })
 
 
@@ -110,5 +159,44 @@ describe('login', () => {
 		await page.tracing.stop()
 		await har.stop()
 		done()
-	}, 16000)
+	}, 10000)
+
+	test('login wrong technician', async done => {
+		// start generating a trace file
+		await page.tracing.start({path: 'trace/login_wrong_technician_har.json',screenshots: true})
+		await har.start({ path: 'trace/login_wrong_technician_trace.har' })
+		// ARRANGE
+		await page.goto('http://localhost:5000', { timeout: 30000, waitUntil: 'load' })
+		await page.goto('http://localhost:5000/tech/login', { timeout: 30000, waitUntil: 'load' })
+		// take a screenshot and save to the file system
+		await page.screenshot({ path: 'screenshots/login_wrong.png' })
+
+		// ACT
+		// complete the form and click submit
+		await page.type('input[name=user]', 'dodobrat')
+		await page.type('input[name=pass]', '123456')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('p.error')
+		// await page.waitFor(1000) // sometimes you need a second delay
+
+		// ASSERT
+		const title = await page.title()
+		expect(title).toBe('Login')
+
+		// extracting the text inside the first H1 element on the page
+		const heading = await page.evaluate( () => {
+			const dom = document.querySelector('p.error')
+			return dom.innerText
+		})
+		expect(heading).toBe('username "dodobrat" not found')
+
+		// grab a screenshot
+		const image = await page.screenshot()
+		// compare to the screenshot from the previous test run
+		expect(image).toMatchImageSnapshot()
+		// stop logging to the trace files
+		await page.tracing.stop()
+		await har.stop()
+		done()
+	}, 10000)
 })
