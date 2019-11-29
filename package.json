@@ -8,7 +8,6 @@
   },
   "scripts": {
     "coverage": "./node_modules/.bin/jest --coverage 'unit tests/' && ./node_modules/.bin/istanbul check-coverage --statement 100 --branch 100 --function 100 --line 100",
-    "dependency": "./node_modules/.bin/dependency-check -i bcrypt --unused --no-dev . && node_modules/.bin/dependency-check -i modules --missing .",
     "start": "node index.js",
     "jsdoc": "node_modules/.bin/jsdoc -c jsdoc.conf",
     "linter": "node_modules/.bin/eslint .",
@@ -24,7 +23,7 @@
   "author": "Deyan Bozhilov",
   "license": "ISC",
   "dependencies": {
-    "bcrypt-promise": "^2.0.0",
+    "bcryptjs": "^2.4.3",
     "fs-extra": "^7.0.1",
     "handlebars": "^4.4.2",
     "koa": "^2.6.2",

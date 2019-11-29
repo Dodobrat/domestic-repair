@@ -1,6 +1,6 @@
 'use strict'
 
-const bcrypt = require('bcrypt-promise')
+const bcrypt = require('bcryptjs')
 const fs = require('fs-extra')
 const mime = require('mime-types')
 const sqlite = require('sqlite-async')

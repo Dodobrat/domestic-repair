@@ -1,6 +1,6 @@
 'use strict'
 
-const bcrypt = require('bcrypt-promise')
+const bcrypt = require('bcryptjs')
 const sqlite = require('sqlite-async')
 const saltRounds = 10
 
