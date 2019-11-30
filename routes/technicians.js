@@ -173,17 +173,17 @@ router.get('/remove-man/:id', async ctx => {
  * @route {GET} /drop/table/q   ||   /drop/table/j
  */
 
-router.get('/drop/table/q', async ctx => {
-	const quote = await new Quote(dbName)
-	await quote.dropQuoteTable()
-	ctx.body = 'quotes table dropped'
-})
-
-router.get('/drop/table/j', async ctx => {
-	const job = await new Job(dbName)
-	await job.dropJobsTable()
-	ctx.body = 'jobs table dropped'
-})
+// router.get('/drop/table/q', async ctx => {
+// 	const quote = await new Quote(dbName)
+// 	await quote.dropQuoteTable()
+// 	ctx.body = 'quotes table dropped'
+// })
+//
+// router.get('/drop/table/j', async ctx => {
+// 	const job = await new Job(dbName)
+// 	await job.dropJobsTable()
+// 	ctx.body = 'jobs table dropped'
+// })
 
 module.exports = router
 
