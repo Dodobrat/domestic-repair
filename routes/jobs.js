@@ -102,16 +102,16 @@ router.get('/tech/report/:id', async ctx => {
  * @route {GET} /assigned/:id
  * @authentication This route requires cookie-based authentication.
  */
-router.get('/assign/:id/:qid', async ctx => {
+router.get('/assign/:jid/:qid', async ctx => {
 	const techJob = await new Job(dbName)
 	const techQuote = await new Quote(dbName)
-	await techJob.markAssigned(ctx.params.id)
+	await techJob.markAssigned(ctx.params.jid)
 	await techQuote.approveQuote(ctx.params.qid)
 	const timestamp = await new Timestamp()
 	const newLog = {
 		desc: 'Job assigned',
 		createdAt: await timestamp.generateTimestamp(),
-		jobId: ctx.params.id
+		jobId: ctx.params.jid
 	}
 	const log = await new Log(dbName)
 	await log.addLog(newLog)
@@ -125,17 +125,16 @@ router.get('/assign/:id/:qid', async ctx => {
  * @route {GET} /terminate/:id
  * @authentication This route requires cookie-based authentication.
  */
-router.get('/terminate/:id', async ctx => {
+router.get('/terminate/:jid/:qid', async ctx => {
 	const job = await new Job(dbName)
 	const quote = await new Quote(dbName)
-	const quoteRes = await quote.getQuoteById(ctx.params.id)
-	await job.setQuoteToNull(quoteRes.jobId)
-	await quote.deleteQuote(ctx.params.id)
+	await job.setQuoteToNull(ctx.params.jid)
+	await quote.deleteQuote(ctx.params.qid)
 	const timestamp = await new Timestamp()
 	const newLog = {
 		desc: 'Job quote refused',
 		createdAt: await timestamp.generateTimestamp(),
-		jobId: ctx.params.id
+		jobId: ctx.params.jid
 	}
 	const log = await new Log(dbName)
 	await log.addLog(newLog)

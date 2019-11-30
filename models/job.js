@@ -165,12 +165,12 @@ module.exports = class Job {
 
 	//TODO: Uncomment the next function for resetting the database and deleting quotes and jobs tables
 
-	// async dropJobsTable() {
-	// 	let sql = 'PRAGMA foreign_keys = OFF;'
-	// 	await this.db.run(sql)
-	// 	sql = 'DROP TABLE jobs;'
-	// 	await this.db.run(sql)
-	// 	sql = 'PRAGMA foreign_keys = ON;'
-	// 	await this.db.run(sql)
-	// }
+	async dropJobsTable() {
+		let sql = 'PRAGMA foreign_keys = OFF;'
+		await this.db.run(sql)
+		sql = 'DROP TABLE jobs;'
+		await this.db.run(sql)
+		sql = 'PRAGMA foreign_keys = ON;'
+		await this.db.run(sql)
+	}
 }

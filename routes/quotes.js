@@ -41,7 +41,7 @@ const genLog = async(jobId) => {
 	await log.addLog(newLog)
 }
 
-const onQuoteSuccess = async(data) => {
+const onQuoteSuccess = async(data,tech) => {
 	const jobModel = await new Job(dbName)
 	const quoteModel = await new Quote(dbName)
 	const quoteRes = await quoteModel.getQuoteByJobId(data.jobId)
@@ -49,7 +49,7 @@ const onQuoteSuccess = async(data) => {
 	await genLog(data.jobId)
 	const mailer = await new Mailer()
 	const {user, quote} = await gatherMailData(quoteRes.jobId)
-	await mailer.mail(user, data.techId , quote)
+	await mailer.mail(user, tech , quote)
 }
 
 /**
@@ -69,7 +69,7 @@ router.post('/tech/quote/:id', async ctx => {
 	const quote = await new Quote(dbName)
 	const result = await quote.provideQuote(data)
 	if(!result.err) {
-		await onQuoteSuccess(data)
+		await onQuoteSuccess(data,ctx.session.tech)
 		await ctx.redirect('back')
 	} else {
 		await ctx.redirect(`/tech/report/${data.jobId}?err=${result.err}`)

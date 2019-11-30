@@ -20,7 +20,7 @@
         </a>
         <div class="current-user">
             <img src="../{{user.avatar}}" alt="">
-            <span class="hide-md">Hi, {{user.user}}</span> 
+            <span class="hide-md">Hi, {{user.user}}</span>
         </div>
         <a class="logout" href="/logout">
             <span class="hide-md">Logout</span> <i class="fas fa-power-off"></i>
@@ -69,7 +69,7 @@
             <span> Manufacturer: <span class="tag">{{job.appMan}}</span></span>
         </div>
         <p class="created">
-            by <span class="secondary">{{user.user}}</span> | created: 
+            by <span class="secondary">{{user.user}}</span> | created:
             <span class="secondary">{{job.createdAt}}</span>
         </p>
         <div class="job-desc">
@@ -103,7 +103,7 @@
                         <a href="/assign/{{quote.jobId}}/{{quote.id}}">
                             <button class="accept">Approve Offer</button>
                         </a>
-                        <a href="/terminate/{{quote.id}}">
+                        <a href="/terminate/{{quote.jobId}}/{{quote.id}}">
                             <button class="decline">Decline Offer</button>
                         </a>
                     {{/if}}
@@ -111,7 +111,7 @@
             </div>
         {{/if}}
     {{/if}}
-    
+
     {{#if logs}}
         <div class="job-details">
             <p class="title"><i class="fas fa-info-circle"></i> Logs</h3>
