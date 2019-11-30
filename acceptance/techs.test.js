@@ -34,10 +34,6 @@ afterAll( async() => {
 	await shell.exec('afterAll.sh')
 })
 
-beforeEach(async() => {
-	await shell.exec('beforeEach.sh')
-})
-
 describe('register', () => {
 	test('register technician', async done => {
 		// start generating a trace file
