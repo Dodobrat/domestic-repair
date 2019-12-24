@@ -9,6 +9,8 @@
 
 You can view and play around with the website after you have ran nodemon command at : __http://localhost:5000__
 
+For technician login: __http://localhost:5000/tech/login__
+
 ## IF ERRORS OCCUR WHEN TRYING TO DOWNLOAD A PDF
 
 FIX - manually create a folder `pdfs` in `public` folder
